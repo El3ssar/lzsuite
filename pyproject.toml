@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "lzsuite"
-version = "0.1.1"
+version = "0.1.2"
 description = "Array-oriented Lempel–Ziv analysis and signal discretization."
 readme = "README.md"
 requires-python = ">=3.10"
