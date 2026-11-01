@@ -99,18 +99,50 @@ Actions needs permission to create pull requests; that repository setting is
 configured during setup. CI tests PR titles, so use squash merges with semantic
 PR titles. Branch protection, if added later, must account for bot-created PRs.
 
-## PyPI publication — next stage
+## PyPI publication
 
-No current workflow uploads to PyPI. Before enabling it:
+Version 0.1.0 was published on November 1, 2026:
+https://pypi.org/project/lzsuite/0.1.0/
 
-1. Confirm package-name availability and validate author/license metadata.
-2. Configure the project's GitHub Actions trusted publisher on PyPI.
-3. Add a dedicated publish job using OpenID Connect, after successful tests and
-   distribution validation. Use a GitHub environment for release control if desired.
-4. Verify an installed wheel in a clean environment and review its README rendering.
-5. Publish the chosen release, then verify installation from the index.
+PyPI trusts this exact GitHub identity:
 
-Do not claim a version is on PyPI merely because it has a GitHub tag.
+| Setting | Value |
+|---|---|
+| Repository owner | `El3ssar` |
+| Repository | `lzsuite` |
+| Workflow filename | `release.yml` |
+| GitHub environment | `pypi` |
+
+The environment is restricted to the `main` branch. Authentication uses a
+short-lived GitHub OIDC identity; there is no long-lived PyPI API token in the
+repository. If the repository owner, workflow filename, or environment changes,
+update the trusted publisher on PyPI to match before attempting another upload.
+
+After release-please creates a release and its distributions, the workflow:
+
+1. Downloads the attached wheel and source archive from that GitHub release.
+2. Checks filenames, project/version metadata, and SHA-256 against GitHub's
+   asset digests; no distribution is rebuilt during publication.
+3. Validates metadata, smoke-tests the installed wheel, and passes the files
+   to a separate publishing job with only the required OIDC permission.
+4. Publishes those exact files using PyPA's publishing action.
+
+To publish an existing stable GitHub release, or resume an interrupted upload:
+
+```sh
+gh workflow run release.yml --repo El3ssar/lzsuite --ref main -f tag=v0.1.0
+```
+
+Replace the example tag with the intended release. Manual dispatch skips release
+creation and publishing uses the already-attached artifacts. Existing uploads
+are skipped on retry; never overwrite or modify artifacts for a published
+version. Fix package changes in a new version instead.
+
+After publishing, verify the workflow's `publish-pypi` job succeeded, check the
+PyPI project/version, compare file digests to the GitHub release, and install
+from PyPI in an isolated environment. A GitHub tag alone does not prove upload.
+The initial 0.1.0 upload passed those checks, including scalar, array, and default
+parallel calculations on Python 3.10.
 
 ## Zenodo archiving
 

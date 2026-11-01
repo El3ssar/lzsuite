@@ -2,6 +2,7 @@
 
 [![CI](https://github.com/El3ssar/lzsuite/actions/workflows/ci.yml/badge.svg)](https://github.com/El3ssar/lzsuite/actions/workflows/ci.yml)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://github.com/El3ssar/lzsuite/blob/main/pyproject.toml)
+[![PyPI](https://img.shields.io/pypi/v/lzsuite)](https://pypi.org/project/lzsuite/)
 [![MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23858269.svg)](https://doi.org/10.5281/zenodo.23858269)
 
@@ -14,12 +15,24 @@ all remaining positions.
 engine. lzsuite adds array handling, discretization, shared symbol encodings,
 and parallel calculation across sequences.
 
-**Early development:** the API can evolve. The repository is available on GitHub
-and releases are archived on Zenodo. PyPI publication is planned separately.
+**Early development:** the API can evolve. Packages are published on PyPI,
+the source is available on GitHub, and releases are archived on Zenodo.
 
 ## Install and try it
 
-From the repository, using [uv](https://docs.astral.sh/uv/):
+Install from PyPI with Python 3.10+:
+
+```sh
+python -m pip install lzsuite
+```
+
+Or add it to a [uv](https://docs.astral.sh/uv/) project:
+
+```sh
+uv add lzsuite
+```
+
+For development and the interactive examples, clone the repository:
 
 ```sh
 git clone https://github.com/El3ssar/lzsuite.git
@@ -241,8 +254,8 @@ versioning, GitHub releases, PyPI publication, and Zenodo archiving.
 Conventional Commits drive release-please version/changelog PRs. Merging a release
 PR creates the `vX.Y.Z` tag and GitHub release. CI checks Python 3.10–3.14 on Linux,
 plus macOS and Windows, and builds package distributions. GitHub releases are
-automatically archived through Zenodo's repository integration. **PyPI uploading
-is not enabled yet.**
+automatically archived through Zenodo's repository integration and published to
+PyPI through the trusted GitHub release workflow, after artifact verification.
 
 The public API contains only callable user functions; implementation modules are
 private. `lzs.__version__` gives the installed version. A complete executable
