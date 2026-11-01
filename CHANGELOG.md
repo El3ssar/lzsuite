@@ -1,5 +1,14 @@
 # Changelog
 
+## [0.1.2](https://github.com/El3ssar/lzsuite/compare/v0.1.1...v0.1.2) (2026-11-01)
+
+
+### Documentation
+
+* add documentation badge to README ([5e705c7](https://github.com/El3ssar/lzsuite/commit/5e705c7ac252e7b3b106a49985525c20395cc549))
+* add hero poster and social link preview metadata ([26cd141](https://github.com/El3ssar/lzsuite/commit/26cd1410ce1b54e26222e447306164d41a87cf6a))
+* use the page headline in social link titles ([24897c2](https://github.com/El3ssar/lzsuite/commit/24897c28a93e10ed199daa0d84d3cf730c73a0f4))
+
 ## [0.1.1](https://github.com/El3ssar/lzsuite/compare/v0.1.0...v0.1.1) (2026-11-01)
 
 
