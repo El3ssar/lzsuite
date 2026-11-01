@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.1.1](https://github.com/El3ssar/lzsuite/compare/v0.1.0...v0.1.1) (2026-11-01)
+
+
+### Bug Fixes
+
+* **ci:** allow manual publishing after skipped release creation ([e3bb629](https://github.com/El3ssar/lzsuite/commit/e3bb629f46f0e763134dc31f93d2ff1f8919184d))
+
+
+### Documentation
+
+* add full-width landing hero with responsive examples ([5fc974a](https://github.com/El3ssar/lzsuite/commit/5fc974a1e0f70b8c11c813b59a83d6cc0117669b))
+* add illustrated documentation site and NumPy API reference ([aeed441](https://github.com/El3ssar/lzsuite/commit/aeed4411f6f7cae93c3557550e991c9132faf7ed))
+* add verified Zenodo identifiers and archive links ([7088137](https://github.com/El3ssar/lzsuite/commit/70881376d46e09530d6d1c72ff126818eb995649))
+* document PyPI installation and trusted release publishing ([617ccba](https://github.com/El3ssar/lzsuite/commit/617ccbade8aa0eab366ed3165e36282a88aa0f40))
+* invalidate cached assets when documentation changes ([2e07873](https://github.com/El3ssar/lzsuite/commit/2e07873950eac511008eac22639fbeb6a5598a91))
+* replace promotional layout with responsive technical documentation ([81a63a5](https://github.com/El3ssar/lzsuite/commit/81a63a5f9b7b0bb464ecce84ee57d128de150373))
+
 ## 0.1.0 (2026-11-01)
 
 
