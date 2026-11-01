@@ -1,5 +1,6 @@
 ---
 title: Lempel–Ziv analysis for NumPy
+description: Discretize signals, calculate LZ76 complexity and entropy, and compare sequences across multidimensional NumPy arrays.
 hide:
   - navigation
   - toc

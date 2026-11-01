@@ -6,7 +6,7 @@
   ],
   "python": "3.12.15",
   "versions": {
-    "lzsuite": "0.1.0",
+    "lzsuite": "0.1.1",
     "lzcomplexity": "3.0.0",
     "numpy": "2.5.4",
     "matplotlib": "3.11.2",

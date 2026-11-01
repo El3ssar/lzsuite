@@ -44,6 +44,7 @@ deps-update:
 
 docs-figures:
 	uv run --locked --group docs python scripts/generate_docs_figures.py
+	uv run --locked --group docs python scripts/generate_social_card.py
 
 docs: docs-figures
 	uv run --locked --group docs pytest --doctest-modules src/lzsuite -q

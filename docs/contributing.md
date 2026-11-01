@@ -61,3 +61,12 @@ The stylesheet defines shared color tokens for the page, navigation, code,
 tables, search, and footer. Figures have separate light and dark exports;
 check their labels and legends in both schemes. Check narrow layouts for page
 navigation, long signatures, table scrolling, and plot readability.
+
+## Link previews
+
+`scripts/generate_social_card.py` renders the 1200×630 share image from the site
+logo, bundled fonts, and hero figure. `make docs-figures` regenerates it alongside
+the gallery figures. The build hook adds Open Graph and large-image card metadata
+to each page, with its canonical URL, title, description, and an absolute image URL.
+The image URL includes a content hash so a changed poster gets a new cache key.
+`make docs` checks the metadata and exported image before deployment.

@@ -3,12 +3,13 @@
 from __future__ import annotations
 
 import ast
+import hashlib
 import inspect
 import re
 import sys
 from html.parser import HTMLParser
 from pathlib import Path
-from urllib.parse import unquote, urlsplit
+from urllib.parse import unquote, urljoin, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -66,10 +67,20 @@ class Page(HTMLParser):
         self.path = path
         self.ids = set()
         self.references = []
+        self.social = {}
+        self.in_head = False
         self.feed(path.read_text(encoding="utf-8"))
 
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
+        if tag == "head":
+            self.in_head = True
+        if tag == "meta":
+            key = attrs.get("property", attrs.get("name", ""))
+            if key.startswith(("og:", "twitter:")):
+                assert self.in_head, f"{self.path}: social metadata must be in the head"
+                assert key not in self.social, f"{self.path}: duplicate social tag {key}"
+                self.social[key] = attrs.get("content", "")
         if "id" in attrs:
             self.ids.add(attrs["id"])
         if tag in {"a", "link", "img", "script"}:
@@ -81,11 +92,39 @@ class Page(HTMLParser):
             if "/figures/" in attrs.get("src", ""):
                 assert attrs["alt"].strip(), f"{self.path}: plot needs descriptive alt text"
 
+    def handle_endtag(self, tag):
+        if tag == "head":
+            self.in_head = False
+
 
 def check_site():
     """Check all local assets/anchors and the complete generated public reference."""
     site = ROOT / "site"
     pages = {path.resolve(): Page(path) for path in site.rglob("*.html")}
+    from PIL import Image
+
+    poster = site / "assets/social/lzsuite.png"
+    with Image.open(poster) as card:
+        assert card.format == "PNG" and card.size == (1200, 630)
+        card.verify()
+    origin = "https://el3ssar.github.io/lzsuite/"
+    digest = hashlib.sha256(poster.read_bytes()).hexdigest()[:12]
+    image_url = urljoin(origin, f"assets/social/lzsuite.png?v={digest}")
+    for path, page in pages.items():
+        if path.name == "404.html":
+            continue
+        relative = path.relative_to(site).as_posix().removesuffix("index.html")
+        assert page.social["og:url"] == urljoin(origin, relative), path
+        assert page.social["og:type"] == "website", path
+        assert page.social["og:image"] == page.social["twitter:image"] == image_url, path
+        assert page.social["og:image:type"] == "image/png", path
+        assert page.social["og:image:width"] == "1200", path
+        assert page.social["og:image:height"] == "630", path
+        assert page.social["twitter:card"] == "summary_large_image", path
+        assert page.social["og:title"] == page.social["twitter:title"], path
+        assert page.social["og:description"] == page.social["twitter:description"], path
+        for key in ("og:title", "og:description", "og:image:alt", "twitter:image:alt"):
+            assert page.social[key].strip(), (path, key)
     links = 0
     for path, page in pages.items():
         for ref in page.references:
@@ -129,7 +168,7 @@ def check_site():
     assert (site / "assets/favicon.png").is_file()
     print(
         f"Validated {len(pages)} HTML pages, {links} local references, "
-        "API anchors, and 14 figures in both themes."
+        "API anchors, social previews, and 14 figures in both themes."
     )
 
 
