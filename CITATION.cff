@@ -9,4 +9,8 @@ authors:
 repository-code: "https://github.com/El3ssar/lzsuite"
 url: "https://github.com/El3ssar/lzsuite"
 license: MIT
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.23858269"
+    description: "Concept DOI covering all archived versions of lzsuite."
 abstract: "A Python wrapper around lzcomplexity for multidimensional arrays, signal discretization, parallel sequence analysis, and information distances."

@@ -3,6 +3,7 @@
 [![CI](https://github.com/El3ssar/lzsuite/actions/workflows/ci.yml/badge.svg)](https://github.com/El3ssar/lzsuite/actions/workflows/ci.yml)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://github.com/El3ssar/lzsuite/blob/main/pyproject.toml)
 [![MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23858269.svg)](https://doi.org/10.5281/zenodo.23858269)
 
 Lempel–Ziv analysis for multidimensional NumPy arrays. Choose the axis containing
 observations, optionally discretize continuous signals, and calculate complexity,
@@ -13,8 +14,8 @@ all remaining positions.
 engine. lzsuite adds array handling, discretization, shared symbol encodings,
 and parallel calculation across sequences.
 
-**Early development:** the API can evolve. The repository is available on GitHub;
-PyPI publication and Zenodo registration are planned separately.
+**Early development:** the API can evolve. The repository is available on GitHub
+and releases are archived on Zenodo. PyPI publication is planned separately.
 
 ## Install and try it
 
@@ -235,12 +236,13 @@ The development environment is locked in `uv.lock`; runtime compatibility ranges
 are declared in `pyproject.toml`. The backend dependency is currently
 `lzcomplexity>=3.0.0,<4`, preventing an unreviewed major-version upgrade. See the
 [maintenance and release guide](docs/maintenance.md) for dependency updates,
-versioning, GitHub releases, and the future PyPI/Zenodo steps.
+versioning, GitHub releases, PyPI publication, and Zenodo archiving.
 
 Conventional Commits drive release-please version/changelog PRs. Merging a release
 PR creates the `vX.Y.Z` tag and GitHub release. CI checks Python 3.10–3.14 on Linux,
-plus macOS and Windows, and builds package distributions. **There is no PyPI
-upload or Zenodo registration in the current workflows.**
+plus macOS and Windows, and builds package distributions. GitHub releases are
+automatically archived through Zenodo's repository integration. **PyPI uploading
+is not enabled yet.**
 
 The public API contains only callable user functions; implementation modules are
 private. `lzs.__version__` gives the installed version. A complete executable
@@ -252,3 +254,6 @@ MIT licensed; see [LICENSE](LICENSE). The LZ76 engine and estimator implementati
 are provided by [lzcomplexity](https://github.com/pleros-ai/lzcomplexity), with its
 own authorship and scientific references. Software citation metadata for this
 wrapper is in [CITATION.cff](CITATION.cff).
+
+Cite the [all-versions DOI](https://doi.org/10.5281/zenodo.23858269) for the project,
+or the [0.1.0 DOI](https://doi.org/10.5281/zenodo.23858270) for that exact archive.

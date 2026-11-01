@@ -112,13 +112,20 @@ No current workflow uploads to PyPI. Before enabling it:
 
 Do not claim a version is on PyPI merely because it has a GitHub tag.
 
-## Zenodo registration — next stage
+## Zenodo archiving
 
-`CITATION.cff` contains the software authorship and repository reference, without
-an invented DOI. When ready, connect this GitHub repository to Zenodo and confirm
-that releases are archived with the intended title, authors and license. Add
-verified DOI links to the citation and README after registration. Decide whether
-the first GitHub release should be created only after that connection is enabled.
+The repository is connected to Zenodo. Publishing a GitHub release triggers
+automatic archiving through Zenodo's release webhook, independently of PyPI.
+Version 0.1.0 was archived on November 1, 2026:
+
+- Version DOI: https://doi.org/10.5281/zenodo.23858270
+- Concept DOI (all versions): https://doi.org/10.5281/zenodo.23858269
+
+The README badge and `CITATION.cff` identifier use the concept DOI. Do not replace
+it with a fixed version DOI on the development branch: that would become stale
+for subsequent releases. For reproducible studies, cite the specific version DOI.
+After every release, verify the new Zenodo record's version, authors, license and
+source archive. Keep `CITATION.cff` metadata current before making the release.
 
 A GitHub repository, a GitHub release, a PyPI package, and a Zenodo record are
 separate milestones. Check each service before reporting completion.
