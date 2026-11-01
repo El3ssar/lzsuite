@@ -123,6 +123,7 @@ jobs:
 
   publish-pypi:
     needs: prepare-publication
+    if: ${{ !cancelled() && needs.prepare-publication.result == 'success' }}
     runs-on: ubuntu-latest
     environment:
       name: pypi
