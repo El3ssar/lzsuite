@@ -3,6 +3,13 @@ name: Release
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Published GitHub release tag to upload to PyPI
+        required: true
+        type: string
+        default: v0.1.0
 
 permissions: {}
 
@@ -12,6 +19,7 @@ concurrency:
 
 jobs:
   release-please:
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -58,4 +66,75 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           RELEASE_TAG: ${{ needs.release-please.outputs.tag_name }}
         run: gh release upload "$RELEASE_TAG" dist/* --clobber
-      # PyPI publication will be added when the project is ready to publish.
+
+  prepare-publication:
+    needs: [release-please, distributions]
+    if: >-
+      ${{ !cancelled() && github.ref == 'refs/heads/main' &&
+          (github.event_name == 'workflow_dispatch' ||
+           (needs.release-please.outputs.release_created == 'true' &&
+            needs.distributions.result == 'success')) }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      tag: ${{ steps.release.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.13.6'
+          enable-cache: true
+      - run: uv sync --locked
+      - name: Select and validate release tag
+        id: release
+        env:
+          RELEASE_TAG: ${{ inputs.tag || needs.release-please.outputs.tag_name }}
+        run: |
+          uv run --no-sync python - <<'PY'
+          import os
+          import re
+          tag = os.environ["RELEASE_TAG"]
+          if not re.fullmatch(r"v(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)\.(?:0|[1-9][0-9]*)", tag):
+              raise SystemExit("Use a stable release tag such as v0.1.0")
+          with open(os.environ["GITHUB_OUTPUT"], "a") as output:
+              output.write(f"tag={tag}\n")
+          PY
+      - name: Download the existing GitHub release distributions
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          gh api "repos/$GITHUB_REPOSITORY/releases/tags/$RELEASE_TAG" > release.json
+          gh release download "$RELEASE_TAG" --dir dist --pattern '*.whl' --pattern '*.tar.gz'
+      - name: Verify release metadata and asset digests
+        run: uv run --no-sync python scripts/check_release_assets.py release.json dist
+      - run: uv run --no-sync twine check dist/*
+      - name: Check the installed wheel
+        run: |
+          uv venv .venv-wheel --python 3.12
+          uv pip install --python .venv-wheel/bin/python dist/*.whl
+          .venv-wheel/bin/python -I scripts/check_wheel.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pypi-distributions-${{ steps.release.outputs.tag }}
+          path: dist/*
+          if-no-files-found: error
+
+  publish-pypi:
+    needs: prepare-publication
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/project/lzsuite/
+    permissions:
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: pypi-distributions-${{ needs.prepare-publication.outputs.tag }}
+          path: dist
+      - name: Publish to PyPI with a short-lived OIDC identity
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          skip-existing: true
