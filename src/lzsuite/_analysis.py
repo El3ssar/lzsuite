@@ -45,14 +45,15 @@ def h(
     axis: int = 0,
     discretization: Discretization = None,
     discretization_kwargs: Mapping[str, Any] | None = None,
-    n_jobs: int = 1,
+    n_jobs: int = 4,
     log_base: int | None = None,
-) -> NDArray:
+) -> float | NDArray:
     """Return entropy density per sequence; the result removes ``axis``.
 
     Floats default to mean binarization. Integers, booleans and strings are
     symbols unless a numeric discretizer is explicitly supplied. The log base
     defaults to each discretized sequence's distinct-symbol count (minimum 2).
+    A 1D input returns a Python float; higher-dimensional inputs return arrays.
     """
     results, shape = _analyze(
         data,
@@ -63,7 +64,7 @@ def h(
         n_jobs=n_jobs,
         log_base=log_base,
     )
-    return np.asarray(results, dtype=float).reshape(shape)
+    return float(results[0]) if not shape else np.asarray(results, dtype=float).reshape(shape)
 
 
 def complexity(
@@ -72,9 +73,9 @@ def complexity(
     axis: int = 0,
     discretization: Discretization = None,
     discretization_kwargs: Mapping[str, Any] | None = None,
-    n_jobs: int = 1,
-) -> NDArray:
-    """Return the LZ76 factor count per sequence, removing ``axis``."""
+    n_jobs: int = 4,
+) -> int | NDArray:
+    """Return factor counts, as a Python int for 1D input or an array otherwise."""
     results, shape = _analyze(
         data,
         "complexity",
@@ -83,7 +84,7 @@ def complexity(
         discretization_kwargs=discretization_kwargs,
         n_jobs=n_jobs,
     )
-    return np.asarray(results, dtype=np.int64).reshape(shape)
+    return int(results[0]) if not shape else np.asarray(results, dtype=np.int64).reshape(shape)
 
 
 def factorization(
@@ -92,9 +93,9 @@ def factorization(
     axis: int = 0,
     discretization: Discretization = None,
     discretization_kwargs: Mapping[str, Any] | None = None,
-    n_jobs: int = 1,
-) -> NDArray:
-    """Return an object array of ``(count, boundaries)`` entries, removing ``axis``.
+    n_jobs: int = 4,
+) -> tuple[int, list[int]] | NDArray:
+    """Return ``(count, boundaries)`` for 1D input or an object array otherwise.
 
     Boundaries describe the discretized sequence and retain the backend's
     final-tail convention; a final boundary may exceed the sequence length.
@@ -107,7 +108,7 @@ def factorization(
         discretization_kwargs=discretization_kwargs,
         n_jobs=n_jobs,
     )
-    return object_array(results, shape)
+    return results[0] if not shape else object_array(results, shape)
 
 
 def emc(
@@ -116,15 +117,16 @@ def emc(
     axis: int = 0,
     discretization: Discretization = None,
     discretization_kwargs: Mapping[str, Any] | None = None,
-    n_jobs: int = 1,
+    n_jobs: int = 4,
     log_base: int | None = None,
     max_block_size: int = -1,
     method: str = "chao-shen",
-) -> tuple[NDArray, NDArray]:
+) -> tuple[float, list[float]] | tuple[NDArray, NDArray]:
     """Return ``(scores, profiles)`` with both arrays shaped by removing ``axis``.
 
     ``profiles`` is an object array of increment lists, which can differ in
     length. ``method`` selects the backend E estimator, not the discretizer.
+    A 1D input returns ``(float_score, increment_list)`` directly.
     """
     results, shape = _analyze(
         data,
@@ -137,6 +139,8 @@ def emc(
         max_block_size=max_block_size,
         method=method,
     )
+    if not shape:
+        return results[0]
     scores = np.asarray([result[0] for result in results], dtype=float).reshape(shape)
     return scores, object_array([result[1] for result in results], shape)
 
@@ -147,12 +151,12 @@ def lz76(
     axis: int = 0,
     discretization: Discretization = None,
     discretization_kwargs: Mapping[str, Any] | None = None,
-    n_jobs: int = 1,
+    n_jobs: int = 4,
     log_base: int | None = None,
     max_block_size: int = -1,
     method: str = "chao-shen",
-) -> NDArray:
-    """Return an object array of full backend result dictionaries, removing ``axis``."""
+) -> dict[str, Any] | NDArray:
+    """Return a full result dict for 1D input or an object array otherwise."""
     results, shape = _analyze(
         data,
         "lz76",
@@ -164,4 +168,4 @@ def lz76(
         max_block_size=max_block_size,
         method=method,
     )
-    return object_array(results, shape)
+    return results[0] if not shape else object_array(results, shape)

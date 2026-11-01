@@ -10,6 +10,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = "MIT"
 license-files = ["LICENSE"]
+authors = [{ name = "Daniel Estévez Moya" }]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Science/Research",
@@ -21,16 +22,23 @@ classifiers = [
     "Programming Language :: Python :: 3.14",
     "Topic :: Scientific/Engineering :: Information Analysis",
 ]
-dependencies = ["numpy>=1.24", "lzcomplexity>=3.0.0,<4"]
+dependencies = ["numpy>=1.24", "lzcomplexity>=3.0.0,<4", "joblib>=1.5,<2"]
+
+[project.urls]
+Homepage = "https://github.com/El3ssar/lzsuite"
+Repository = "https://github.com/El3ssar/lzsuite"
+Documentation = "https://github.com/El3ssar/lzsuite#readme"
+Issues = "https://github.com/El3ssar/lzsuite/issues"
+Changelog = "https://github.com/El3ssar/lzsuite/blob/main/CHANGELOG.md"
 
 [dependency-groups]
-dev = ["pytest>=8", "pytest-cov>=5", "ruff>=0.11", "pre-commit>=4", "twine>=6"]
+dev = ["pytest>=8", "pytest-cov>=5", "ruff>=0.11", "pre-commit>=4", "twine>=6", "ipython>=8.12"]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/lzsuite"]
 
 [tool.hatch.build.targets.sdist]
-include = ["src/", "tests/", "examples/", "README.md", "CONTRIBUTING.md", "CHANGELOG.md", "LICENSE", "pyproject.toml"]
+include = ["src/", "tests/", "examples/", "docs/", "scripts/", "Makefile", "CITATION.cff", "README.md", "CONTRIBUTING.md", "CHANGELOG.md", "LICENSE", "pyproject.toml"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

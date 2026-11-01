@@ -59,7 +59,7 @@ def main():
 
     # A string ARRAY treats each element as one category, even a whole word.
     categories = np.array(["rest", "move", "rest", "move"] * 64)
-    category_entropy = lzs.h(categories).item()  # 1D input -> 0D output
+    category_entropy = lzs.h(categories)  # 1D input -> Python float
     # Asking to discretize strings raises TypeError. Empty/nonfinite data errors too.
 
     # Custom methods receive a 1D numeric array and return 1D integer labels.
@@ -89,8 +89,8 @@ def main():
     np.testing.assert_allclose(paired, lzs.nid(data, other))  # nid is an alias
     # Both modes accept discretization and discretization_kwargs as above.
 
-    # Separate processes can calculate sequences in parallel. Default n_jobs=1;
-    # -1 uses the available CPUs. Use a main guard when starting processes.
+    # Default: up to four processes, capped by available CPUs and task count.
+    # n_jobs=1 runs serially; -1 uses all available CPUs. IPython works too.
     parallel = lzs.h(data, n_jobs=2)
     np.testing.assert_allclose(entropy, parallel)
 

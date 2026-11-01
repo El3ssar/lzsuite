@@ -29,15 +29,15 @@ def test_shared_codebook_does_not_make_disjoint_alphabets_identical():
     first = np.array(["a", "b", "a", "b"] * 20)
     second = np.array(["c", "d", "c", "d"] * 20)
     expected = backend.nid(bytes([0, 1] * 20), bytes([2, 3] * 20))
-    assert lzs.distance(first, second).item() == expected
-    assert lzs.distance(first, second).item() != lzs.distance(first, first).item()
+    assert lzs.distance(first, second) == expected
+    assert lzs.distance(first, second) != lzs.distance(first, first)
 
 
 def test_large_signed_and_unsigned_labels_do_not_lose_precision():
     first = np.array([-1, 2**63 - 1, -1, 2**63 - 1] * 20, dtype=np.int64)
     second = np.array([2**63, 2**64 - 1, 2**63, 2**64 - 1] * 20, dtype=np.uint64)
     expected = backend.nid(bytes([0, 1] * 20), bytes([2, 3] * 20))
-    assert lzs.distance(first, second).item() == expected
+    assert lzs.distance(first, second) == expected
 
 
 @pytest.mark.parametrize("axis", [0, 1, 2, -1])
@@ -85,7 +85,7 @@ def test_shared_alphabet_overflow_warns_once_and_keeps_result_shape():
     expected = backend.nid(
         first.astype(np.uint8).tobytes(), (second % 256).astype(np.uint8).tobytes()
     )
-    assert actual.item() == expected
+    assert actual == expected
 
 
 def test_mixed_symbol_families_rejected():
@@ -103,5 +103,16 @@ def test_empty_collections():
 
 def test_process_execution_matches_serial():
     data = np.random.default_rng(22).integers(0, 3, size=(100, 4))
-    np.testing.assert_array_equal(lzs.distance(data, n_jobs=2), lzs.distance(data))
-    np.testing.assert_array_equal(lzs.distance(data, data, n_jobs=2), lzs.distance(data, data))
+    np.testing.assert_array_equal(lzs.distance(data, n_jobs=2), lzs.distance(data, n_jobs=1))
+    np.testing.assert_array_equal(
+        lzs.distance(data, data, n_jobs=2), lzs.distance(data, data, n_jobs=1)
+    )
+
+
+def test_single_pair_is_a_float_but_all_pairs_still_returns_a_matrix():
+    first = np.array([0, 1, 0, 1] * 20)
+    second = np.array([1, 1, 0, 0] * 20)
+    assert type(lzs.distance(first, second)) is float
+    assert type(lzs.nid(first, second)) is float
+    assert lzs.distance(first).shape == (1, 1)
+    assert lzs.distance(first[:, None], second[:, None]).shape == (1,)

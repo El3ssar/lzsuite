@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
-import multiprocessing
 import operator
 import os
-from concurrent.futures import ProcessPoolExecutor
 from typing import Any
+
+import numpy as np
+from joblib import Parallel, cpu_count, delayed, parallel_config
 
 
 def _initialize_worker() -> None:
@@ -27,18 +28,21 @@ def _calculate(task: tuple[str, tuple[bytes, ...], dict[str, Any]]) -> Any:
 def calculate_many(
     tasks: list[tuple[str, tuple[bytes, ...], dict[str, Any]]], n_jobs: int
 ) -> list[Any]:
-    if isinstance(n_jobs, bool):
+    if isinstance(n_jobs, (bool, np.bool_)):
         raise TypeError("n_jobs must be a positive integer or -1 for available CPUs.")
     n_jobs = operator.index(n_jobs)
-    if n_jobs == -1:
-        n_jobs = os.cpu_count() or 1
-    if n_jobs < 1:
+    if n_jobs != -1 and n_jobs < 1:
         raise ValueError("n_jobs must be a positive integer or -1 for available CPUs.")
-    if n_jobs == 1 or len(tasks) < 2:
+    available = cpu_count()
+    workers = min(available if n_jobs == -1 else n_jobs, available, len(tasks))
+    if workers < 2:
         return [_calculate(task) for task in tasks]
-    with ProcessPoolExecutor(
-        max_workers=min(n_jobs, len(tasks)),
-        mp_context=multiprocessing.get_context("spawn"),
+    # Loky supports interactive sessions and reuses workers across calls.
+    # Initializers run in children only, before the first backend import.
+    with parallel_config(
+        backend="loky",
+        n_jobs=workers,
+        inner_max_num_threads=1,
         initializer=_initialize_worker,
-    ) as pool:
-        return list(pool.map(_calculate, tasks, chunksize=max(1, len(tasks) // (n_jobs * 4))))
+    ):
+        return Parallel()(delayed(_calculate)(task) for task in tasks)

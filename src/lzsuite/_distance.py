@@ -21,8 +21,8 @@ def distance(
     axis: int = 0,
     discretization: Discretization = None,
     discretization_kwargs: Mapping[str, Any] | None = None,
-    n_jobs: int = 1,
-) -> NDArray:
+    n_jobs: int = 4,
+) -> float | NDArray:
     """Calculate NID with one shared symbol encoding.
 
     With one input, return an M×M matrix for all M sequences. Sequence order
@@ -33,6 +33,8 @@ def distance(
     shaped like the input with ``axis`` removed. Shapes outside that axis
     must match exactly; sequence lengths may differ, including after
     discretization. No broadcasting is performed.
+    A pair of 1D inputs returns a Python float. A single 1D input still returns
+    a 1×1 all-pairs matrix.
 
     Float inputs default to per-sequence mean binarization. An explicit
     discretizer is applied separately to every sequence in both arrays.
@@ -54,7 +56,8 @@ def distance(
     encoded = encode_shared(first + second)
     count = len(first)
     tasks = [("nid", (encoded[i], encoded[count + i]), {}) for i in range(count)]
-    return np.asarray(calculate_many(tasks, n_jobs), dtype=float).reshape(shape)
+    results = calculate_many(tasks, n_jobs)
+    return float(results[0]) if not shape else np.asarray(results, dtype=float).reshape(shape)
 
 
 nid = distance

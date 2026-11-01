@@ -42,12 +42,12 @@ def test_float_default_and_explicit_numeric_override():
 
 def test_symbols_preserve_observations_instead_of_decimal_serialization():
     values = np.array([0, 1, 10, 0, 1, 10])
-    assert lzs.h(values).item() == backend.h(bytes([0, 1, 2, 0, 1, 2]))
+    assert lzs.h(values) == backend.h(bytes([0, 1, 2, 0, 1, 2]))
     # Each multi-character string is one symbol, not a stream of characters.
     text = np.array(["red", "blue", "red", "green", "blue", "green"])
     symbols, base = reference_symbols(text)
-    assert lzs.h(text).item() == backend.h(symbols, log_base=base)
-    assert lzs.h(text).shape == ()
+    assert lzs.h(text) == backend.h(symbols, log_base=base)
+    assert type(lzs.h(text)) is float
     with pytest.raises(TypeError, match="numeric"):
         lzs.h(text, discretization="mean")
 
@@ -58,7 +58,7 @@ def test_each_sequence_uses_its_own_observed_log_base():
         symbols, _ = reference_symbols(values[:, column])
         assert lzs.h(values)[column] == backend.h(symbols, log_base=base)
     np.testing.assert_allclose(lzs.h(values, log_base=2), lzs.h(values) * [1, 2])
-    assert lzs.h(np.zeros(16, dtype=int)).item() == backend.h(bytes(16), log_base=2)
+    assert lzs.h(np.zeros(16, dtype=int)) == backend.h(bytes(16), log_base=2)
 
 
 @pytest.mark.parametrize("method", ["chao-shen", "shuffle"])
@@ -91,7 +91,7 @@ def test_overflow_warns_and_continues_with_documented_mapping():
     with pytest.warns(RuntimeWarning, match="300 distinct symbols"):
         actual = lzs.h(values)
     expected = backend.h((values % 256).astype(np.uint8).tobytes(), log_base=300)
-    assert actual.item() == expected
+    assert actual == expected
     # Exactly 256 categories needs no warning (warnings are errors in this suite).
     assert np.isfinite(lzs.h(np.arange(256)))
 
@@ -141,12 +141,38 @@ def test_parallel_and_serial_results_agree_with_local_discretizer():
 
     np.testing.assert_array_equal(
         lzs.h(data, discretization=local, n_jobs=2),
-        lzs.h(data, discretization=local),
+        lzs.h(data, discretization=local, n_jobs=1),
     )
-    serial = lzs.lz76(data, max_block_size=4)
+    serial = lzs.lz76(data, max_block_size=4, n_jobs=1)
     parallel = lzs.lz76(data, max_block_size=4, n_jobs=2)
     assert parallel.tolist() == serial.tolist()
 
 
 def test_auto_jobs_with_single_sequence():
     assert lzs.h([0, 1], n_jobs=-1) == lzs.h([0, 1])
+
+
+@pytest.mark.parametrize("method", ["chao-shen", "shuffle"])
+def test_single_sequence_returns_native_python_values(method):
+    values = np.array([0, 1, 0, 0, 1, 1] * 20)
+    symbols, base = reference_symbols(values)
+    assert type(lzs.h(values)) is float
+    assert type(lzs.complexity(values)) is int
+    factors = lzs.factorization(values)
+    assert type(factors) is tuple
+    assert factors == backend.factorization(symbols)
+    score, profile = lzs.emc(values, method=method, max_block_size=4)
+    assert type(score) is float
+    assert type(profile) is list
+    assert (score, profile) == backend.emc(symbols, log_base=base, method=method, max_block_size=4)
+    full = lzs.lz76(values, method=method, max_block_size=4)
+    assert type(full) is dict
+    assert full == backend.lz76(symbols, log_base=base, method=method, max_block_size=4)
+
+
+def test_singleton_batch_dimensions_are_preserved():
+    values = np.array([0, 1, 0, 1] * 20).reshape(-1, 1, 1)
+    for function in (lzs.h, lzs.complexity, lzs.factorization, lzs.lz76):
+        assert function(values).shape == (1, 1)
+    scores, profiles = lzs.emc(values)
+    assert scores.shape == profiles.shape == (1, 1)
