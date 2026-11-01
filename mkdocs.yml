@@ -6,6 +6,8 @@ repo_name: El3ssar/lzsuite
 edit_uri: edit/main/docs/
 copyright: © 2026 lzsuite contributors · MIT license
 strict: true
+hooks:
+  - scripts/docs_hooks.py
 theme:
   name: material
   language: en
