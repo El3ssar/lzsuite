@@ -1,6 +1,7 @@
 # lzsuite
 
 [![CI](https://github.com/El3ssar/lzsuite/actions/workflows/ci.yml/badge.svg)](https://github.com/El3ssar/lzsuite/actions/workflows/ci.yml)
+[![Documentation](https://img.shields.io/badge/docs-online-blue)](https://el3ssar.github.io/lzsuite/)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://github.com/El3ssar/lzsuite/blob/main/pyproject.toml)
 [![PyPI](https://img.shields.io/pypi/v/lzsuite)](https://pypi.org/project/lzsuite/)
 [![MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
