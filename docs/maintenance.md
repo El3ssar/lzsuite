@@ -72,8 +72,11 @@ version, changelog, manifest, and only lzsuite's own version entry in `uv.lock`.
 The lockfile selector uses `name.value` because the TOML updater wraps scalar
 values with source-position metadata; it has been checked against release-please.
 
-The first release is configured as 0.1.0. No release tag is needed during normal
-development. To cut a GitHub release:
+The first release is configured as 0.1.0. Before that release, the manifest uses
+release-please's `0.0.0` bootstrap marker, meaning no version has been released;
+the source package remains 0.1.0. The release PR replaces that marker with the
+actual released version. No release tag is needed during normal development.
+To cut a GitHub release:
 
 1. Review the release PR's changelog, version and dependency lock diff.
 2. Run its checks; resolve any scientific or API compatibility concerns.
