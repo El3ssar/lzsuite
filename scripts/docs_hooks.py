@@ -16,7 +16,8 @@ def social_metadata(page, config):
     poster = Path(config.docs_dir) / "assets/social/lzsuite.png"
     digest = hashlib.sha256(poster.read_bytes()).hexdigest()[:12]
     image = urljoin(config.site_url, f"assets/social/lzsuite.png?v={digest}")
-    title = f"{config.site_name} — {page.title}"
+    page_title = page.meta.get("title") or page.title
+    title = f"{config.site_name} — {page_title}"
     description = page.meta.get("description") or config.site_description
     alt = "lzsuite: Lempel–Ziv analysis for NumPy arrays, with a signal and its binary labels."
     properties = {

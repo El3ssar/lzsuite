@@ -125,6 +125,9 @@ def check_site():
         assert page.social["og:description"] == page.social["twitter:description"], path
         for key in ("og:title", "og:description", "og:image:alt", "twitter:image:alt"):
             assert page.social[key].strip(), (path, key)
+    assert pages[(site / "index.html").resolve()].social["og:title"] == (
+        "lzsuite — Lempel–Ziv analysis for NumPy"
+    )
     links = 0
     for path, page in pages.items():
         for ref in page.references:
