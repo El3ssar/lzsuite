@@ -139,7 +139,7 @@ accepts arrays of numeric/boolean symbols or Unicode/byte strings, not object
 arrays, complex numbers, or scalar strings as sequences. To analyze characters,
 pass `np.array(list("banana"))`.
 
-Above **256 distinct symbols**, `AlphabetSizeWarning` is raised as a warning
+Above **256 distinct symbols**, a standard `RuntimeWarning` is emitted
 and execution continues. Category codes are reduced modulo 256, so different
 symbols merge and results do not faithfully describe the original alphabet.
 For scalar analyses the base still uses the original distinct-symbol count;
@@ -179,3 +179,12 @@ prepares a version/changelog PR and creates a `vX.Y.Z` tag and GitHub release
 when that PR is merged. This mirrors lzcomplexity's release approach.
 CI builds distributions; **PyPI publication is not enabled**.
 See [CONTRIBUTING.md](CONTRIBUTING.md) for setup and release details.
+
+## Complete example and public API
+
+Run the commented walkthrough with `uv run python examples/overview.py`.
+The public namespace contains only these user functions:
+`h`, `complexity`, `factorization`, `emc`, `lz76`, `distance`, `nid`,
+`discretize`, `available_discretizers`, and `register_discretizer`.
+`__version__` provides the installed package version. All implementation modules
+are private; use `discretize(..., method="mean")` to invoke built-in methods.

@@ -9,9 +9,9 @@ import numpy as np
 from numpy.typing import ArrayLike, NDArray
 
 from ._arrays import object_array, prepare
+from ._discretization import Discretization
 from ._encoding import encode
 from ._execution import calculate_many
-from .discretization import Discretization
 
 
 def _analyze(

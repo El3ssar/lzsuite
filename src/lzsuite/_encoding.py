@@ -8,17 +8,13 @@ import numpy as np
 from numpy.typing import NDArray
 
 
-class AlphabetSizeWarning(RuntimeWarning):
-    """More than 256 symbols were merged to fit the backend's byte alphabet."""
-
-
 def _warn_large(size: int) -> None:
     if size > 256:
         warnings.warn(
             f"Found {size} distinct symbols; lzcomplexity supports 256. "
             "Labels are mapped modulo 256, merging different symbols. "
             "Results do not faithfully describe the original alphabet.",
-            AlphabetSizeWarning,
+            RuntimeWarning,
             stacklevel=4,
         )
 

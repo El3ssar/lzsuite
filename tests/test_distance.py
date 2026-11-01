@@ -79,7 +79,7 @@ def test_discretization_default_override_and_different_output_lengths():
 def test_shared_alphabet_overflow_warns_once_and_keeps_result_shape():
     first = np.arange(150)
     second = np.arange(150, 300)
-    with pytest.warns(lzs.AlphabetSizeWarning, match="300 distinct") as caught:
+    with pytest.warns(RuntimeWarning, match="300 distinct") as caught:
         actual = lzs.distance(first, second)
     assert len(caught) == 1
     expected = backend.nid(

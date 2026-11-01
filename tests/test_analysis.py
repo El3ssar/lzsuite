@@ -88,7 +88,7 @@ def test_shortened_custom_outputs_and_permutations():
 
 def test_overflow_warns_and_continues_with_documented_mapping():
     values = np.arange(300)
-    with pytest.warns(lzs.AlphabetSizeWarning, match="300 distinct symbols"):
+    with pytest.warns(RuntimeWarning, match="300 distinct symbols"):
         actual = lzs.h(values)
     expected = backend.h((values % 256).astype(np.uint8).tobytes(), log_base=300)
     assert actual.item() == expected

@@ -4,7 +4,7 @@ import numpy as np
 import pytest
 
 import lzsuite as lzs
-from lzsuite import discretization as disc
+from lzsuite import _discretization as disc
 
 
 def test_thresholds_and_ties():

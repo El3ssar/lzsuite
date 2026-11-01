@@ -9,9 +9,9 @@ import numpy as np
 from numpy.typing import ArrayLike, NDArray
 
 from ._arrays import prepare
+from ._discretization import Discretization
 from ._encoding import encode_shared
 from ._execution import calculate_many
-from .discretization import Discretization
 
 
 def distance(
