@@ -18,6 +18,15 @@ and parallel calculation across sequences.
 **Early development:** the API can evolve. Packages are published on PyPI,
 the source is available on GitHub, and releases are archived on Zenodo.
 
+## Documentation
+
+Visit the **[documentation site](https://el3ssar.github.io/lzsuite/)** for the
+[quickstart](https://el3ssar.github.io/lzsuite/guide/quickstart/),
+[illustrated gallery](https://el3ssar.github.io/lzsuite/gallery/), and
+[API reference](https://el3ssar.github.io/lzsuite/api/).
+The gallery includes 14 reproducible plots covering discretization, ordinal
+patterns, entropy density, effective complexity, distances, and array workflows.
+
 ## Install and try it
 
 Install from PyPI with Python 3.10+:

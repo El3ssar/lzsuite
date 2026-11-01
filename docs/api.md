@@ -1,91 +1,40 @@
-# API reference
+# API at a glance
 
-All functions are available directly from `import lzsuite as lzs`. Implementation
-modules are private and do not belong to the supported interface.
+A small top-level namespace contains only the functions users call. All
+implementation modules are private. Use `help(lzs.h)` or `lzs.h?` in IPython for
+the same NumPy-style parameter documentation rendered in this site.
 
-## Calculations and return types
+## Measurements
 
-| Function | 1D sequence | Higher-dimensional input |
+| Function | One 1D sequence | Batch input |
 |---|---|---|
-| `h(data, ...)` | Python `float` | Float ndarray |
-| `complexity(data, ...)` | Python `int` | Integer ndarray |
-| `factorization(data, ...)` | `(int, list[int])` | Object ndarray of those tuples |
-| `emc(data, ...)` | `(float, list[float])` | `(score_array, profile_object_array)` |
-| `lz76(data, ...)` | Result `dict` | Object ndarray of dictionaries |
-| `distance(data, other, ...)` | Python `float` for a 1D pair | Float ndarray of corresponding pairs |
-| `distance(data, ...)` | `(1, 1)` float ndarray | `(M, M)` float ndarray for M sequences |
-| `nid(...)` | Alias for `distance` | Alias for `distance` |
+| [`h`](reference/analysis.md#lzsuite.h) | `float` | Float ndarray |
+| [`complexity`](reference/analysis.md#lzsuite.complexity) | `int` | Integer ndarray |
+| [`factorization`](reference/analysis.md#lzsuite.factorization) | `(count, boundaries)` | Object ndarray of tuples |
+| [`emc`](reference/analysis.md#lzsuite.emc) | `(score, increments)` | Score ndarray plus object ndarray of lists |
+| [`lz76`](reference/analysis.md#lzsuite.lz76) | Dictionary | Object ndarray of dictionaries |
 
-Array calculations remove the sequence axis and preserve all other axes, including
-singleton dimensions. All-pairs distance is the exception: it flattens those
-positions in C order into matrix rows/columns. No output is wrapped in a 0D array.
+Common keyword arguments are `axis=0`, `discretization=None`,
+`discretization_kwargs=None`, and `n_jobs=4`. h, E, and full analysis accept
+`log_base=None`. E and full analysis also accept `max_block_size=-1` and
+`method="chao-shen"`.
 
-### Shared parameters
+## Comparisons
 
-- `axis=0`: axis containing successive observations; negative indices work.
-- `discretization=None`: floats use `mean`; integer/boolean/string arrays use
-  their existing symbols. Supply a registered name or callable to discretize
-  numeric data explicitly. String discretization raises `TypeError`.
-- `discretization_kwargs=None`: mapping passed as keyword arguments to each
-  selected discretizer. Methods run separately on each sequence, in the caller.
-- `n_jobs=4`: maximum worker processes, capped by available CPUs and task count.
-  `1` uses inline calculation; `-1` requests all available CPUs. Other nonpositive
-  values, booleans, and non-integers are rejected.
+| Call | Result |
+|---|---|
+| [`distance(data)`](reference/distance.md#lzsuite.distance) | M-by-M all-pairs matrix |
+| `distance(data, other)` | Corresponding distances, batch shape preserved |
+| `distance(sequence, other_sequence)` | Python float |
+| `nid(...)` | Alias for `distance` |
 
-### Entropy and E options
+## Representation
 
-`h`, `emc`, and `lz76` accept `log_base=None`: use each prepared sequence's
-observed distinct-symbol count, minimum 2. An explicit integer base must be >=2.
+| Function | Purpose |
+|---|---|
+| [`discretize`](reference/discretization.md#lzsuite.discretize) | Apply a named or callable 1D discretizer |
+| [`available_discretizers`](reference/discretization.md#lzsuite.available_discretizers) | Sorted tuple of registered names |
+| [`register_discretizer`](reference/discretization.md#lzsuite.register_discretizer) | Register directly or as a decorator |
 
-`emc` and `lz76` also accept:
-
-- `max_block_size=-1`: nonpositive values select the backend's automatic range;
-  a positive value selects an explicit maximum range.
-- `method="chao-shen"`: E estimator. The alternative is `"shuffle"`.
-
-`emc` profiles contain nonnegative fitted increments summing to E, with lengths
-that may differ across sequences. `lz76` returns the backend's fields:
-`complexity`, `h`, `factors`, `emc`, `epsilon`, `factors_stddev`, `normal_error`,
-`poison_error`, and `extras`. The nested `emc` dictionary includes its method,
-value, increments, actual maximum range, and raw first-range contrast.
-
-Factor boundaries are positions in the prepared symbolic sequence, not the
-original float observations if discretization changed length. The final copied
-tail can appear in boundaries without contributing to the factor count, and the
-final boundary can extend beyond the sequence end.
-
-### Distance inputs
-
-One input calculates all unordered pairs once and mirrors them, retaining actual
-self-distances. Two inputs calculate corresponding pairs only; their shapes
-outside the sequence axis must match exactly. Observation counts may differ.
-Both inputs must use numeric categories or both use the same string kind
-(Unicode/bytes). A shared codebook preserves the same category meanings.
-NID does not use logarithm units.
-
-## Discretization and registration
-
-`discretize(data, method="mean", **kwargs)` accepts a nonempty finite numeric 1D
-sequence and returns a 1D integer-label array. Built-ins are `mean`, `median`,
-`bins`, `quantile`, and `permutation`; their rules are listed in the README.
-Custom methods may change length, but must return nonempty 1D integer labels.
-The input is copied before invocation.
-
-`register_discretizer(name, function=None, *, replace=False)` works as either a
-function call or decorator. Names must be nonempty strings; replacing a name
-requires `replace=True`. Registration is session-local.
-
-`available_discretizers()` returns the sorted tuple of registered labels.
-
-## Validation and limits
-
-Supported data: real numeric/boolean arrays and Unicode/byte-string arrays.
-Scalar arrays, complex/object arrays, nonfinite numeric data, and empty sequence
-axes are rejected. An empty collection with a nonempty observation axis returns
-an appropriately shaped empty array.
-
-Above 256 distinct categories, a standard `RuntimeWarning` is emitted and byte
-labels wrap modulo 256. Results then merge categories and must not be interpreted
-as faithful measurements of the original alphabet. Distances check the shared
-vocabulary. One-sequence calculations still normalize using the original
-observed category count.
+See [built-in rules](reference/methods.md), [result conventions](reference/results.md),
+and the [full guides](guide/quickstart.md) for contracts and examples.

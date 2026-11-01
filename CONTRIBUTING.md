@@ -128,3 +128,24 @@ its dtype and shape, the call and parameters, the expected/actual behavior,
 Python/platform information, and the lzsuite/lzcomplexity/NumPy versions. Include
 `n_jobs` when reporting parallel-execution issues. Keep scientific data private
 unless you have permission to share it.
+
+## Documentation and figures
+
+```sh
+uv sync --locked --group docs
+make docs
+make docs-serve
+```
+
+`make docs` regenerates the 14 SVG/PNG figure pairs, executes guide snippets and
+source doctests, validates NumPy-style docstrings, builds the API reference, and
+checks the generated site's local links, anchors, and image descriptions.
+`make docs-serve` opens a live-reloading local server at http://127.0.0.1:8000.
+Documentation dependencies are separate from runtime requirements.
+
+Edit `docs/` for guides, `src/lzsuite/` docstrings for generated API documentation,
+and `scripts/generate_docs_figures.py` for plots. Use NumPy-style Parameters,
+Returns, Raises, Notes, and Examples sections as appropriate; describe exact
+return shapes, units, defaults, and edge cases. Prefer small runnable snippets.
+The documentation workflow validates pull requests and deploys `main` to
+[GitHub Pages](https://el3ssar.github.io/lzsuite/) after successful checks.

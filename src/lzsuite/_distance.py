@@ -23,21 +23,88 @@ def distance(
     discretization_kwargs: Mapping[str, Any] | None = None,
     n_jobs: int = 4,
 ) -> float | NDArray:
-    """Calculate NID with one shared symbol encoding.
+    """Calculate all-pairs or corresponding-pair LZ76 information distances.
 
-    With one input, return an M×M matrix for all M sequences. Sequence order
-    is C order on the input shape after removing ``axis``. Compute and retain
-    actual self-distances on the diagonal.
+    Parameters
+    ----------
+    data : array_like
+        Real numeric, boolean, Unicode-string, or byte-string array. Each
+        position outside ``axis`` identifies one sequence. Floats default
+        to per-sequence mean binarization; other supported dtypes are symbols.
+    other : array_like, optional
+        Omit for all pairs within ``data``. Otherwise compare corresponding
+        sequences; shapes outside ``axis`` must match exactly. Observation
+        counts may differ, including after discretization.
+    axis : int, default=0
+        Axis containing successive observations. Negative axes are accepted.
+    discretization : str or callable, optional
+        Registered method name or function applied to each numeric sequence.
+        Overrides automatic mean binarization. Strings cannot be discretized.
+    discretization_kwargs : mapping of str to object, optional
+        Keyword arguments passed to the selected discretizer. Custom methods
+        receive an input copy and may return a different sequence length.
+    n_jobs : int, default=4
+        Maximum worker processes, capped by available CPUs and calculation
+        count. Use 1 for inline execution or -1 for all available CPUs.
 
-    With two inputs, compare corresponding sequences and return an array
-    shaped like the input with ``axis`` removed. Shapes outside that axis
-    must match exactly; sequence lengths may differ, including after
-    discretization. No broadcasting is performed.
-    A pair of 1D inputs returns a Python float. A single 1D input still returns
-    a 1×1 all-pairs matrix.
+    Returns
+    -------
+    distances : float or numpy.ndarray
+        With one input, an M-by-M float matrix for M sequences, including
+        actual self-distances. Matrix order is C-order flattening of the
+        dimensions outside ``axis``. A single 1D input returns shape (1, 1).
+        With two 1D inputs, a Python float. Otherwise an array shaped like
+        either input with ``axis`` removed. No broadcasting is performed.
 
-    Float inputs default to per-sequence mean binarization. An explicit
-    discretizer is applied separately to every sequence in both arrays.
+    Raises
+    ------
+    TypeError
+        If dtypes are unsupported, numeric and string categories are mixed,
+        string representations differ, or a parameter type is invalid.
+    ValueError
+        If batch shapes differ, an axis is invalid, observations are empty
+        or nonfinite, or discretization/execution settings are invalid.
+
+    Warns
+    -----
+    RuntimeWarning
+        If the shared vocabulary exceeds 256 categories. Labels then merge
+        modulo 256 and the original alphabet is not faithfully represented.
+
+    Notes
+    -----
+    For factor count C, the backend computes
+    max(C(XY) - C(X), C(YX) - C(Y)) / max(C(X), C(Y)).
+    The result is symmetric but finite-sequence self-distance can be nonzero.
+    There is no clipping or forced zero diagonal. A shared codebook preserves
+    category meanings across all inputs; independent codebooks would not.
+    The logarithm base does not enter this ratio.
+
+    For float data, thresholds or bin edges are fitted separately to each
+    sequence unless a custom fixed-rule discretizer is supplied. The same
+    method is used for both operands. ``nid`` is an alias for this function.
+
+    Preparation and discretization run in the caller. Native calculations
+    use reusable joblib processes, with one Rayon thread per worker. The
+    caller's Rayon configuration is unchanged. A single calculation runs
+    inline. Use ``n_jobs=1`` when process overhead outweighs useful work.
+
+    See Also
+    --------
+    nid : Alias for this function.
+    h : Entropy density for individual sequences.
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> import lzsuite as lzs
+    >>> data = np.array([[0, 0], [1, 1], [0, 1], [1, 0]] * 32)
+    >>> lzs.distance(data, n_jobs=1).shape
+    (2, 2)
+    >>> lzs.distance(data, data, n_jobs=1).shape
+    (2,)
+    >>> isinstance(lzs.nid(data[:, 0], data[:, 1]), float)
+    True
     """
     first, shape = prepare(data, axis, discretization, discretization_kwargs)
     if other is None:

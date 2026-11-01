@@ -1,0 +1,109 @@
+site_name: lzsuite
+site_description: From continuous signals to symbolic structure. Array-oriented Lempel–Ziv analysis in Python.
+site_url: https://el3ssar.github.io/lzsuite/
+repo_url: https://github.com/El3ssar/lzsuite
+repo_name: El3ssar/lzsuite
+edit_uri: edit/main/docs/
+copyright: Copyright © 2026 lzsuite contributors · MIT licensed
+strict: true
+theme:
+  name: material
+  language: en
+  logo: assets/mark.svg
+  favicon: assets/favicon.png
+  font: false
+  palette:
+    - scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - navigation.tracking
+    - content.code.copy
+    - content.tabs.link
+    - search.highlight
+    - search.suggest
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            docstring_style: numpy
+            docstring_section_style: table
+            show_root_heading: true
+            show_root_full_path: true
+            show_source: false
+            show_signature_annotations: true
+            separate_signature: true
+            heading_level: 2
+            merge_init_into_class: true
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed:
+      alternate_style: true
+extra_css:
+  - assets/stylesheets/extra.css
+extra_javascript:
+  - assets/javascripts/site.js
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/El3ssar/lzsuite
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/lzsuite/
+nav:
+  - Home: index.md
+  - Learn:
+      - Getting started: guide/quickstart.md
+      - Arrays & axes: guide/arrays.md
+      - Discretization: guide/discretization.md
+      - Custom methods: guide/custom-methods.md
+      - Complexity & entropy: guide/measures.md
+      - Effective complexity E: guide/emc.md
+      - Distances: guide/distances.md
+      - Parallel execution: guide/parallel.md
+  - Gallery:
+      - Overview: gallery/index.md
+      - Thresholds & bins: gallery/discretization.md
+      - Ordinal patterns: gallery/permutations.md
+      - Structure & randomness: gallery/structure.md
+      - Similarity maps: gallery/distances.md
+      - Custom rules & parallelism: gallery/workflows.md
+      - Reproduce the figures: gallery/reproduce.md
+  - Reference:
+      - API overview: api.md
+      - Analysis functions: reference/analysis.md
+      - Distance functions: reference/distance.md
+      - Discretization API: reference/discretization.md
+      - Built-in method rules: reference/methods.md
+      - Result conventions: reference/results.md
+  - Project:
+      - Scientific interpretation: concepts/interpretation.md
+      - Troubleshooting: guide/troubleshooting.md
+      - Citation & attribution: citation.md
+      - Contributing: contributing.md
+      - Maintenance & releases: maintenance.md

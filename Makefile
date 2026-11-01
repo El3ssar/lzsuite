@@ -39,3 +39,17 @@ deps-backend:
 deps-update:
 	uv lock --upgrade
 	uv sync --locked
+
+.PHONY: docs docs-figures docs-serve
+
+docs-figures:
+	uv run --locked --group docs python scripts/generate_docs_figures.py
+
+docs: docs-figures
+	uv run --locked --group docs pytest --doctest-modules src/lzsuite -q
+	uv run --locked --group docs python scripts/check_documentation.py source
+	uv run --locked --group docs mkdocs build --strict
+	uv run --locked --group docs python scripts/check_documentation.py site
+
+docs-serve:
+	uv run --locked --group docs mkdocs serve --dev-addr 127.0.0.1:8000

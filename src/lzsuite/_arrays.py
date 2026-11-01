@@ -18,6 +18,44 @@ def prepare(
     discretization: Discretization,
     discretization_kwargs: Mapping[str, Any] | None,
 ) -> tuple[list[NDArray], tuple[int, ...]]:
+    """Extract sequences and symbolize numeric observations along one axis.
+
+    Parameters
+    ----------
+    data : array_like
+        Real numeric, boolean, Unicode-string, or byte-string array. Each
+        position outside ``axis`` identifies one sequence. Floats default
+        to per-sequence mean binarization; other supported dtypes are symbols.
+    axis : int, default=0
+        Axis containing successive observations. Negative axes are accepted.
+    discretization : str or callable, optional
+        Registered method name or function applied to each numeric sequence.
+        Overrides automatic mean binarization. Strings cannot be discretized.
+    discretization_kwargs : mapping of str to object, optional
+        Keyword arguments passed to the selected discretizer. Custom methods
+        receive an input copy and may return a different sequence length.
+
+    Returns
+    -------
+    sequences : list of numpy.ndarray
+        Prepared 1D sequences in C order across the remaining dimensions.
+    shape : tuple of int
+        Batch dimensions, obtained by removing the sequence axis.
+
+    Raises
+    ------
+    TypeError
+        If the dtype or explicit string discretization is unsupported.
+    ValueError
+        If an axis is invalid, observations are empty/nonfinite, or
+        discretization options have no selected method.
+
+    Notes
+    -----
+    Extraction may return views for already-discrete data. Custom numeric
+    methods receive copies through ``discretize``. Empty collections are
+    valid when the observation axis itself is nonempty.
+    """
     values = np.asarray(data)
     if values.ndim == 0:
         raise ValueError("Provide an array with at least one dimension.")
@@ -50,7 +88,25 @@ def prepare(
 
 
 def object_array(results: list[Any], shape: tuple[int, ...]) -> NDArray:
-    """Keep each tuple/list/dict as one entry instead of expanding its dimensions."""
+    """Restore batch shape while preserving each structured result as one item.
+
+    Parameters
+    ----------
+    results : list
+        Tuple, list, or dictionary results, in flattened batch order.
+    shape : tuple of int
+        Desired batch shape; its size must match the result count.
+
+    Returns
+    -------
+    output : numpy.ndarray of object
+        Structured items stored without NumPy expanding their dimensions.
+
+    Raises
+    ------
+    ValueError
+        If shape is incompatible with the number of results.
+    """
     output = np.empty(len(results), dtype=object)
     for i, result in enumerate(results):
         output[i] = result
