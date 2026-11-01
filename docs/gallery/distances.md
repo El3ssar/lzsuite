@@ -1,11 +1,13 @@
-# Maps of recurring patterns
+# Distance matrices
 
 A distance matrix can make a collection easier to inspect, provided each row's
 identity, encoding, and preprocessing are retained.
 
 ## All pairs within a collection
 
-![An eight-by-eight NID matrix compares exact copies, two periodic motifs with noisy variants, and two independent binary sequences.](../assets/figures/distance-matrix.svg){ .plot }
+[![An eight-by-eight NID matrix compares exact copies, two periodic motifs with noisy variants, and two independent binary sequences.](../assets/figures/distance-matrix.svg){ .plot }](../assets/figures/distance-matrix.svg "Open full-size figure")
+
+[![An eight-by-eight NID matrix compares exact copies, two periodic motifs with noisy variants, and two independent binary sequences.](../assets/figures/dark/distance-matrix.svg){ .plot }](../assets/figures/dark/distance-matrix.svg "Open full-size figure")
 
 The alternate-sequence pair is an exact copy. P4 and P8 use period-four and
 period-eight motifs; their noisy variants independently flip symbols with
@@ -29,9 +31,11 @@ a zero diagonal, apply that as a separate, documented transformation.
 
 [SVG](../assets/figures/distance-matrix.svg) · [PNG](../assets/figures/distance-matrix.png)
 
-## One counterpart per position
+## Corresponding sequence pairs
 
-![Distances between corresponding channel/trial sequences are shown as a four-by-three heatmap with three added-noise levels.](../assets/figures/paired-distances.svg){ .plot }
+[![Distances between corresponding channel/trial sequences are shown as a four-by-three heatmap with three added-noise levels.](../assets/figures/paired-distances.svg){ .plot }](../assets/figures/paired-distances.svg "Open full-size figure")
+
+[![Distances between corresponding channel/trial sequences are shown as a four-by-three heatmap with three added-noise levels.](../assets/figures/dark/paired-distances.svg){ .plot }](../assets/figures/dark/paired-distances.svg "Open full-size figure")
 
 This comparison keeps the original channel/trial layout instead of expanding
 it into a square matrix. Three columns add different noise amplitudes, then each

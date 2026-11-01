@@ -29,37 +29,70 @@ from matplotlib.patches import FancyBboxPatch
 
 import lzsuite as lzs
 
-OUT = ROOT / "docs" / "assets" / "figures"
+BASE_OUT = ROOT / "docs" / "assets" / "figures"
+OUT = BASE_OUT
+LOW_INK = "#202c3d"
 SEED = 1729
-INK, TEAL, CORAL, GOLD, BLUE = "#18333e", "#097d80", "#dd714f", "#c6a356", "#637ead"
-COLORS = [TEAL, CORAL, BLUE, GOLD, "#8a6f98", "#83907a"]
-BINARY = ListedColormap(["#e5ece8", TEAL])
-plt.rcParams.update(
-    {
-        "font.family": "DejaVu Sans",
-        "font.size": 10,
-        "axes.titlesize": 13,
-        "axes.titleweight": "bold",
-        "axes.labelcolor": INK,
-        "text.color": INK,
-        "xtick.color": INK,
-        "ytick.color": INK,
-        "axes.edgecolor": "#c6d3d2",
-        "axes.spines.top": False,
-        "axes.spines.right": False,
-        "figure.facecolor": "#fbfcfa",
-        "axes.facecolor": "#fbfcfa",
-        "savefig.facecolor": "#fbfcfa",
-        "svg.fonttype": "none",
-        "svg.hashsalt": "lzsuite-documentation",
-        "lines.linewidth": 2,
-    }
-)
+
+
+def configure_theme(theme):
+    """Set figure colors and output directory for one site color scheme."""
+    global OUT, INK, TEAL, CORAL, GOLD, BLUE, COLORS, BINARY, GRID
+    dark = theme == "dark"
+    OUT = BASE_OUT / "dark" if dark else BASE_OUT
+    INK = "#e2e8f2" if dark else "#202c3d"
+    TEAL, CORAL, GOLD, BLUE = (
+        ("#8eb6fa", "#dfa18a", "#d8bb73", "#8fc9b3")
+        if dark
+        else ("#396ac0", "#b66a4c", "#ac883d", "#418772")
+    )
+    COLORS = [
+        TEAL,
+        CORAL,
+        BLUE,
+        GOLD,
+        "#b69bd4" if dark else "#8662a7",
+        "#a3b6cb" if dark else "#778ba2",
+    ]
+    GRID = "#343e4e" if dark else "#e3e8f0"
+    background = "#151a22" if dark else "#ffffff"
+    BINARY = ListedColormap(["#303b4d" if dark else "#e7edf7", TEAL])
+    plt.rcParams.update(
+        {
+            "font.family": "DejaVu Sans",
+            "font.size": 10,
+            "axes.titlesize": 11,
+            "axes.titleweight": "normal",
+            "axes.labelcolor": INK,
+            "text.color": INK,
+            "xtick.color": INK,
+            "ytick.color": INK,
+            "axes.edgecolor": GRID,
+            "axes.spines.top": False,
+            "axes.spines.right": False,
+            "figure.facecolor": background,
+            "axes.facecolor": background,
+            "savefig.facecolor": background,
+            "svg.fonttype": "none",
+            "svg.hashsalt": "lzsuite-documentation",
+            "lines.linewidth": 1.7,
+        }
+    )
 
 
 def save(fig, name):
     """Write standalone SVG and PNG exports without time-dependent SVG metadata."""
     fig.savefig(OUT / f"{name}.svg", bbox_inches="tight", metadata={"Date": None})
+    svg = OUT / f"{name}.svg"
+    content = svg.read_text(encoding="utf-8").replace(
+        "font-family: 'DejaVu Sans'", "font-family: 'DejaVu Sans', Arial, sans-serif"
+    )
+    content = content.replace(
+        "font-family: 'DejaVu Sans Mono'", "font-family: 'DejaVu Sans Mono', Consolas, monospace"
+    )
+    svg.write_text(
+        "\n".join(line.rstrip() for line in content.splitlines()) + "\n", encoding="utf-8"
+    )
     fig.savefig(OUT / f"{name}.png", bbox_inches="tight", dpi=160)
     plt.close(fig)
 
@@ -71,12 +104,13 @@ def titled(ax, title, xlabel=None, ylabel=None):
         ax.set_xlabel(xlabel)
     if ylabel:
         ax.set_ylabel(ylabel)
-    ax.grid(axis="y", color="#dce4e1", alpha=0.7, zorder=0)
+    ax.grid(axis="y", color=GRID, alpha=0.7, zorder=0)
     ax.set_axisbelow(True)
 
 
-def main():
+def main(theme="light"):
     """Create all gallery measurements, plots and provenance in one seeded run."""
+    configure_theme(theme)
     OUT.mkdir(parents=True, exist_ok=True)
     rng = np.random.default_rng(SEED)
     t = np.linspace(0, 8 * np.pi, 240)
@@ -98,7 +132,7 @@ def main():
     axes[0].plot(short, "o-", color=INK, ms=5)
     axes[0].axhline(short.mean(), color=TEAL, ls="--", label=f"Mean = {short.mean():.2f}")
     axes[0].axhline(np.median(short), color=CORAL, ls=":", label=f"Median = {np.median(short):.2f}")
-    titled(axes[0], "The threshold is part of the observation", ylabel="Value")
+    titled(axes[0], "Mean and median thresholds", ylabel="Value")
     axes[0].legend(frameon=False, loc="upper left")
     for ax, method in zip(axes[1:], ["mean", "median"], strict=True):
         row = lzs.discretize(short, method)
@@ -106,7 +140,14 @@ def main():
         ax.set_yticks([0], [method])
         ax.set_xticks(range(len(short)))
         for i, value in enumerate(row):
-            ax.text(i, 0, str(value), ha="center", va="center", color="white" if value else INK)
+            ax.text(
+                i,
+                0,
+                str(value),
+                ha="center",
+                va="center",
+                color=(LOW_INK if theme == "dark" else "white") if value else INK,
+            )
     axes[-1].set_xlabel("Observation index")
     save(fig, "thresholds")
 
@@ -137,12 +178,14 @@ def main():
     ordinal = lzs.discretize(ordinal_signal, "permutation", order=3)
     fig, axes = plt.subplots(3, 1, figsize=(10, 6), height_ratios=[2, 1, 2], layout="constrained")
     axes[0].plot(ordinal_signal, color=TEAL)
-    titled(axes[0], "A window's ordering becomes its symbol", ylabel="Value")
+    titled(axes[0], "Input sequence", ylabel="Value")
     axes[1].imshow(ordinal[None], cmap=ListedColormap(COLORS), vmin=0, vmax=5, aspect="auto")
     axes[1].set_yticks([0], ["Pattern rank"])
     axes[1].set_xlabel("Window start index")
     axes[2].bar(range(6), np.bincount(ordinal, minlength=6), color=COLORS)
-    titled(axes[2], "Order 3 admits six patterns", "Lexicographic permutation rank", "Windows")
+    titled(
+        axes[2], "Ordinal-pattern frequencies, order 3", "Lexicographic permutation rank", "Windows"
+    )
     axes[2].set_xticks(range(6))
     save(fig, "permutations")
 
@@ -162,7 +205,7 @@ def main():
     for ax, values, title, unit in zip(
         axes,
         [entropy, scores],
-        ["New information: h", "Finite-range organization: E"],
+        ["Entropy density h", "Effective measure complexity E"],
         ["Normalized LZ76 rate", "E, cap = 6"],
         strict=True,
     ):
@@ -184,7 +227,7 @@ def main():
     ax.axhline(1, ls=":", color=INK, lw=1, label="Fair iid binary source: 1 bit")
     ax.set_xscale("log", base=2)
     ax.set_xticks(sizes, [str(x) for x in sizes])
-    titled(ax, "A finite sample is not the infinite source", "Prefix length", "h (bits per symbol)")
+    titled(ax, "Entropy estimates by prefix length", "Prefix length", "h (bits per symbol)")
     ax.legend(frameon=False, ncols=2)
     save(fig, "convergence")
 
@@ -198,7 +241,7 @@ def main():
             label=names[index],
             color=COLORS[index],
         )
-    titled(axes[0], "The fitted profile climbs to E", "Window range", "Cumulative increments")
+    titled(axes[0], "Cumulative fitted increments", "Window range", "Cumulative increments")
     axes[0].legend(frameon=False)
     axes[1].bar(np.arange(1, 7), profiles[3], color=TEAL)
     titled(axes[1], "Period-8 increments", "Window range", "Contribution to E")
@@ -210,7 +253,7 @@ def main():
     ax.bar(x - 0.18, scores, width=0.36, color=TEAL, label="Chao–Shen")
     ax.bar(x + 0.18, shuffle, width=0.36, color=CORAL, label="Shuffle")
     ax.set_xticks(x, names, rotation=15, ha="right")
-    titled(ax, "Different estimators, explicitly selected", ylabel="E (fixed cap = 6)")
+    titled(ax, "E by estimator, maximum block size 6", ylabel="E (fixed cap = 6)")
     ax.legend(frameon=False)
     save(fig, "estimators")
 
@@ -231,7 +274,7 @@ def main():
     image = axes[1].imshow(axis_h, cmap="YlGnBu", aspect="auto", vmin=0)
     axes[1].set_xticks(range(3), [f"Trial {i}" for i in range(3)])
     axes[1].set_yticks(range(4), [f"Channel {i}" for i in range(4)])
-    titled(axes[1], "Output: one h per position, (4, 3)")
+    titled(axes[1], "Entropy array: (4, 3)")
     for index in np.ndindex(axis_h.shape):
         axes[1].text(
             index[1],
@@ -239,7 +282,7 @@ def main():
             f"{axis_h[index]:.2f}",
             ha="center",
             va="center",
-            color="white" if axis_h[index] > 0.6 * axis_h.max() else INK,
+            color="white" if axis_h[index] > 0.6 * axis_h.max() else LOW_INK,
         )
     fig.colorbar(image, ax=axes[1], label="h (observed binary base)", shrink=0.8)
     save(fig, "axes")
@@ -263,7 +306,7 @@ def main():
     image = ax.imshow(distances, cmap="YlGnBu", vmin=min(0, distances.min()))
     ax.set_xticks(range(8), matrix_names, rotation=40, ha="right")
     ax.set_yticks(range(8), matrix_names)
-    titled(ax, "Every sequence pair; actual diagonal retained")
+    titled(ax, "All-pairs information distance")
     for i, j in np.ndindex(distances.shape):
         ax.text(
             j,
@@ -272,7 +315,7 @@ def main():
             ha="center",
             va="center",
             fontsize=8,
-            color="white" if distances[i, j] > 0.58 * distances.max() else INK,
+            color="white" if distances[i, j] > 0.58 * distances.max() else LOW_INK,
         )
     fig.colorbar(image, ax=ax, label="LZ76 NID", shrink=0.8)
     save(fig, "distance-matrix")
@@ -283,7 +326,7 @@ def main():
     image = ax.imshow(paired, aspect="auto", cmap="YlGnBu", vmin=min(0, paired.min()))
     ax.set_xticks(range(3), ["No added noise", "Noise σ=0.4", "Noise σ=1.0"])
     ax.set_yticks(range(4), [f"Channel {i}" for i in range(4)])
-    titled(ax, "Corresponding pairs preserve the (4, 3) layout")
+    titled(ax, "Corresponding information distances: (4, 3)")
     for i, j in np.ndindex(paired.shape):
         ax.text(
             j,
@@ -291,7 +334,7 @@ def main():
             f"{paired[i, j]:.2f}",
             ha="center",
             va="center",
-            color="white" if paired[i, j] > 0.58 * paired.max() else INK,
+            color="white" if paired[i, j] > 0.58 * paired.max() else LOW_INK,
         )
     fig.colorbar(image, ax=ax, label="LZ76 NID", shrink=0.8)
     save(fig, "paired-distances")
@@ -315,7 +358,7 @@ def main():
     for ax, values, title, label, color in zip(
         axes,
         [balances, custom_h],
-        ["What the threshold preserves", "What the parser measures"],
+        ["Symbol frequencies", "Entropy density"],
         ["Fraction of ones", "h (observed binary base)"],
         COLORS[:2],
         strict=True,
@@ -360,14 +403,14 @@ def main():
     fig, axes = plt.subplots(1, 2, figsize=(10, 4.2), layout="constrained")
     axes[0].plot(axis_h.ravel(), "o-", color=TEAL, label="Inline (n_jobs=1)")
     axes[0].plot(parallel_h.ravel(), "x", color=CORAL, ms=8, label="Processes (n_jobs=2)")
-    titled(axes[0], "Same sequences, same results", "Flattened channel/trial index", "h")
+    titled(axes[0], "Serial and parallel entropy estimates", "Flattened channel/trial index", "h")
     axes[0].legend(frameon=False)
     axes[1].bar(range(axis_h.size), (parallel_h - axis_h).ravel(), color=TEAL)
     axes[1].axhline(0, color=INK, lw=1)
     axes[1].set_ylim(-1e-12, 1e-12)
     titled(
         axes[1],
-        "Numerical difference is zero",
+        "Parallel minus serial estimates",
         "Flattened channel/trial index",
         "Parallel − inline",
     )
@@ -375,6 +418,7 @@ def main():
 
     metadata = {
         "seed": SEED,
+        "figure_variants": ["light", "dark"],
         "python": platform.python_version(),
         "versions": {
             name: version(name)
@@ -399,4 +443,5 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    main("light")
+    main("dark")

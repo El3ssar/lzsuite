@@ -1,10 +1,10 @@
 site_name: lzsuite
-site_description: From continuous signals to symbolic structure. Array-oriented Lempel–Ziv analysis in Python.
+site_description: Lempel–Ziv analysis, discretization, and information distance for multidimensional NumPy arrays.
 site_url: https://el3ssar.github.io/lzsuite/
 repo_url: https://github.com/El3ssar/lzsuite
 repo_name: El3ssar/lzsuite
 edit_uri: edit/main/docs/
-copyright: Copyright © 2026 lzsuite contributors · MIT licensed
+copyright: © 2026 lzsuite contributors · MIT license
 strict: true
 theme:
   name: material
@@ -26,8 +26,7 @@ theme:
         icon: material/weather-sunny
         name: Switch to light mode
   features:
-    - navigation.tabs
-    - navigation.sections
+    - navigation.footer
     - navigation.indexes
     - navigation.top
     - navigation.tracking
@@ -43,11 +42,11 @@ plugins:
           paths: [src]
           options:
             docstring_style: numpy
-            docstring_section_style: table
+            docstring_section_style: list
             show_root_heading: true
             show_root_full_path: true
             show_source: false
-            show_signature_annotations: true
+            show_signature_annotations: false
             separate_signature: true
             heading_level: 2
             merge_init_into_class: true
@@ -70,40 +69,51 @@ extra_css:
 extra_javascript:
   - assets/javascripts/site.js
 extra:
+  generator: false
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/El3ssar/lzsuite
     - icon: fontawesome/brands/python
       link: https://pypi.org/project/lzsuite/
 nav:
-  - Home: index.md
-  - Learn:
-      - Getting started: guide/quickstart.md
-      - Arrays & axes: guide/arrays.md
+  - Overview: index.md
+  - Getting started:
+      - Installation: guide/installation.md
+      - Quickstart: guide/quickstart.md
+  - User guide:
+      - Contents: guide/index.md
+      - Arrays and axes: guide/arrays.md
       - Discretization: guide/discretization.md
-      - Custom methods: guide/custom-methods.md
-      - Complexity & entropy: guide/measures.md
-      - Effective complexity E: guide/emc.md
-      - Distances: guide/distances.md
+      - Custom discretizers: guide/custom-methods.md
+      - LZ76 measurements: guide/measures.md
+      - Effective measure complexity: guide/emc.md
+      - Information distance: guide/distances.md
       - Parallel execution: guide/parallel.md
-  - Gallery:
-      - Overview: gallery/index.md
-      - Thresholds & bins: gallery/discretization.md
-      - Ordinal patterns: gallery/permutations.md
-      - Structure & randomness: gallery/structure.md
-      - Similarity maps: gallery/distances.md
-      - Custom rules & parallelism: gallery/workflows.md
-      - Reproduce the figures: gallery/reproduce.md
-  - Reference:
-      - API overview: api.md
-      - Analysis functions: reference/analysis.md
-      - Distance functions: reference/distance.md
-      - Discretization API: reference/discretization.md
-      - Built-in method rules: reference/methods.md
+  - API reference:
+      - Overview: api.md
+      - Analysis:
+          - Functions: reference/analysis.md
+          - h: reference/h.md
+          - complexity: reference/complexity.md
+          - factorization: reference/factorization.md
+          - emc: reference/emc.md
+          - lz76: reference/lz76.md
+      - Distance: reference/distance.md
+      - Discretization: reference/discretization.md
+      - Built-in methods: reference/methods.md
       - Result conventions: reference/results.md
-  - Project:
+  - Examples:
+      - Contents: gallery/index.md
+      - Thresholds and bins: gallery/discretization.md
+      - Ordinal patterns: gallery/permutations.md
+      - Entropy and complexity: gallery/structure.md
+      - Distance matrices: gallery/distances.md
+      - Array calculations: gallery/workflows.md
+      - Figure generation: gallery/reproduce.md
+  - Background:
       - Scientific interpretation: concepts/interpretation.md
       - Troubleshooting: guide/troubleshooting.md
-      - Citation & attribution: citation.md
+      - Citation: citation.md
+  - Development:
       - Contributing: contributing.md
-      - Maintenance & releases: maintenance.md
+      - Maintenance and releases: maintenance.md

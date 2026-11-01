@@ -1,4 +1,4 @@
-# Parallel calculations, with a clear CPU budget
+# Parallel execution
 
 The default is **up to four worker processes**, capped by available CPUs and the
 number of independent calculations. Processes are provided by joblib's loky
@@ -37,7 +37,7 @@ path still lets lzcomplexity use its own Rayon workers for suitable internal
 operations. Python's GIL does not prevent separate processes from calculating
 at the same time.
 
-## Results should agree
+## Numerical agreement
 
 ```python
 serial = lzs.h(x, n_jobs=1)
@@ -45,10 +45,12 @@ parallel = lzs.h(x, n_jobs=2)
 np.testing.assert_array_equal(serial, parallel)
 ```
 
-![Serial and two-process entropy values overlap exactly for twelve channel/trial positions, and their differences are zero.](../assets/figures/parallel-agreement.svg){ .plot }
-<p class="caption">An actual equality check on the gallery data. This is a correctness illustration, not a speed benchmark or a promise of acceleration.</p>
+[![Serial and two-process entropy values overlap exactly for twelve channel/trial positions, and their differences are zero.](../assets/figures/parallel-agreement.svg){ .plot }](../assets/figures/parallel-agreement.svg "Open full-size figure")
 
-## When less parallelism is better
+[![Serial and two-process entropy values overlap exactly for twelve channel/trial positions, and their differences are zero.](../assets/figures/dark/parallel-agreement.svg){ .plot }](../assets/figures/dark/parallel-agreement.svg "Open full-size figure")
+<p class="caption">Entropy estimates and residuals for the same twelve sequences with n_jobs=1 and n_jobs=2. All residuals are zero.</p>
+
+## Process overhead and memory use
 
 Small sequences can cost less to analyze than to send to a process. Larger pools
 also increase working memory: the backend constructs suffix/LCP/LPF arrays,

@@ -50,3 +50,14 @@ documentation. See the full
 [CONTRIBUTING.md](https://github.com/El3ssar/lzsuite/blob/main/CONTRIBUTING.md)
 for source layout and development commands, or the
 [maintenance guide](maintenance.md) for dependency updates and releases.
+
+## Documentation style
+
+Use literal topic headings, direct technical descriptions, and examples with
+concrete inputs and outputs. Keep installation, usage guides, function reference,
+numerical examples, and maintenance instructions in their corresponding sections.
+
+The stylesheet defines shared color tokens for the page, navigation, code,
+tables, search, and footer. Figures have separate light and dark exports;
+check their labels and legends in both schemes. Check narrow layouts for page
+navigation, long signatures, table scrolling, and plot readability.

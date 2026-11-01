@@ -111,7 +111,7 @@ def check_site():
                 )
             links += 1
     public = {
-        "analysis": ("h", "complexity", "factorization", "emc", "lz76"),
+        **{name: (name,) for name in ("h", "complexity", "factorization", "emc", "lz76")},
         "distance": ("distance",),
         "discretization": ("discretize", "available_discretizers", "register_discretizer"),
     }
@@ -122,11 +122,14 @@ def check_site():
     figures = site / "assets/figures"
     assert len(list(figures.glob("*.svg"))) == 14
     assert len(list(figures.glob("*.png"))) == 14
+    for figure in figures.glob("*.svg"):
+        assert (figures / "dark" / figure.name).is_file(), figure.name
+        assert (figures / "dark" / figure.with_suffix(".png").name).is_file(), figure.name
     assert (figures / "provenance.json").is_file()
     assert (site / "assets/favicon.png").is_file()
     print(
         f"Validated {len(pages)} HTML pages, {links} local references, "
-        "API anchors, and 14 figure pairs."
+        "API anchors, and 14 figures in both themes."
     )
 
 

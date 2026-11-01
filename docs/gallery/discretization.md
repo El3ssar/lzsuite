@@ -1,10 +1,12 @@
 # Thresholds and bins
 
-Before asking what a score means, inspect what distinctions your symbols preserve.
+These examples compare thresholding and binning rules on fixed input data.
 
-## An outlier moves the mean
+## Mean and median thresholds
 
-![A large final outlier shifts the mean threshold above the median and changes the resulting binary labels.](../assets/figures/thresholds.svg){ .plot }
+[![A large final outlier shifts the mean threshold above the median and changes the resulting binary labels.](../assets/figures/thresholds.svg){ .plot }](../assets/figures/thresholds.svg "Open full-size figure")
+
+[![A large final outlier shifts the mean threshold above the median and changes the resulting binary labels.](../assets/figures/dark/thresholds.svg){ .plot }](../assets/figures/dark/thresholds.svg "Open full-size figure")
 
 ```python
 import numpy as np
@@ -17,15 +19,16 @@ mean_labels, median_labels
 ```
 
 Both rules put equality in category 0. The outlier influences the fitted mean
-more than the median in this sample. Neither rule is universally preferable:
-choose whether relative level, a reference threshold, or rank balance is relevant
-to the question.
+more than the median in this sample. The resulting binary arrays therefore
+represent different threshold crossings.
 
 [SVG](../assets/figures/thresholds.svg) · [PNG](../assets/figures/thresholds.png)
 
-## Equal width is not equal occupancy
+## Equal-width and quantile bins
 
-![Histograms of a skewed synthetic sample and category counts compare equal-width and quantile binning.](../assets/figures/binning.svg){ .plot }
+[![Histograms of a skewed synthetic sample and category counts compare equal-width and quantile binning.](../assets/figures/binning.svg){ .plot }](../assets/figures/binning.svg "Open full-size figure")
+
+[![Histograms of a skewed synthetic sample and category counts compare equal-width and quantile binning.](../assets/figures/dark/binning.svg){ .plot }](../assets/figures/dark/binning.svg "Open full-size figure")
 
 ```python
 rng = np.random.default_rng(1729)

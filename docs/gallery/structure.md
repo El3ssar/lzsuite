@@ -1,13 +1,13 @@
-# Randomness and organization
+# Entropy and complexity
 
-A periodic sequence and an independent sequence can both be straightforward to
-describe informally. Their LZ76 statistics answer more specific questions: how
-much new material parsing finds, and how block-entropy contrasts accumulate
-across selected ranges.
+These examples compare normalized LZ76 entropy density h and effective measure
+complexity E for binary sequences with different temporal dependencies.
 
-## Read h and E together
+## h and E for six binary sequences
 
-![Measured entropy density and E for constant, alternating, period-four, period-eight, persistent, and independent binary sequences.](../assets/figures/measures.svg){ .plot }
+[![Measured entropy density and E for constant, alternating, period-four, period-eight, persistent, and independent binary sequences.](../assets/figures/measures.svg){ .plot }](../assets/figures/measures.svg "Open full-size figure")
+
+[![Measured entropy density and E for constant, alternating, period-four, period-eight, persistent, and independent binary sequences.](../assets/figures/dark/measures.svg){ .plot }](../assets/figures/dark/measures.svg "Open full-size figure")
 
 All six inputs have 8192 binary observations. E uses a fixed cap of 6. The
 persistent process changes state with probability 0.08 at each step; the
@@ -27,9 +27,11 @@ for sequence in [periodic, independent]:
 
 [SVG](../assets/figures/measures.svg) · [PNG](../assets/figures/measures.png)
 
-## Inspect the profile, not only its final level
+## Fitted profiles and increments
 
-![Cumulative E profiles and individual period-eight increments show how the fitted estimate accumulates across ranges.](../assets/figures/emc-profiles.svg){ .plot }
+[![Cumulative E profiles and individual period-eight increments show how the fitted estimate accumulates across ranges.](../assets/figures/emc-profiles.svg){ .plot }](../assets/figures/emc-profiles.svg "Open full-size figure")
+
+[![Cumulative E profiles and individual period-eight increments show how the fitted estimate accumulates across ranges.](../assets/figures/dark/emc-profiles.svg){ .plot }](../assets/figures/dark/emc-profiles.svg "Open full-size figure")
 
 The profile is fitted jointly. Its increments are nonnegative and sum to the
 score, but they are not separate, independent estimates of each scale's
@@ -37,9 +39,11 @@ contribution. Use the actual cap and selected estimator when interpreting them.
 
 [SVG](../assets/figures/emc-profiles.svg) · [PNG](../assets/figures/emc-profiles.png)
 
-## Changing the estimator changes the numbers
+## Estimator comparison
 
-![Chao–Shen and deterministic shuffle estimates differ on the same six sequences.](../assets/figures/estimators.svg){ .plot }
+[![Chao–Shen and deterministic shuffle estimates differ on the same six sequences.](../assets/figures/estimators.svg){ .plot }](../assets/figures/estimators.svg "Open full-size figure")
+
+[![Chao–Shen and deterministic shuffle estimates differ on the same six sequences.](../assets/figures/dark/estimators.svg){ .plot }](../assets/figures/dark/estimators.svg "Open full-size figure")
 
 ```python
 chao, _ = lzs.emc(periodic, method="chao-shen", max_block_size=6)
@@ -52,9 +56,11 @@ operational outputs, not evidence that one is universally more accurate. See
 
 [SVG](../assets/figures/estimators.svg) · [PNG](../assets/figures/estimators.png)
 
-## Check length sensitivity
+## Sequence-length dependence
 
-![LZ76 entropy estimates change with prefix length, with a one-bit reference line for a fair independent binary source.](../assets/figures/convergence.svg){ .plot }
+[![LZ76 entropy estimates change with prefix length, with a one-bit reference line for a fair independent binary source.](../assets/figures/convergence.svg){ .plot }](../assets/figures/convergence.svg "Open full-size figure")
+
+[![LZ76 entropy estimates change with prefix length, with a one-bit reference line for a fair independent binary source.](../assets/figures/dark/convergence.svg){ .plot }](../assets/figures/dark/convergence.svg "Open full-size figure")
 
 Short estimates can exceed one. The curves use overlapping prefixes, not
 independent realizations, and the dotted source-rate reference is not an exact

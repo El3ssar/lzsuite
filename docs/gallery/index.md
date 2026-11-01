@@ -1,17 +1,32 @@
-# The visual field guide
+# Examples
 
-Explore how representation, ordering, range, and array shape affect the result.
-These figures use seeded synthetic data and the actual lzsuite backend. They
-illustrate specific finite samples, not universal calibration curves.
+Worked examples with synthetic data, executable Python snippets, and measured
+results. Each figure is available as SVG and PNG, with separate light and dark
+versions. Select a figure to open its SVG at full size.
 
-<div class="lz-cards">
-<a class="lz-gallery-card" href="discretization/"><img src="../assets/figures/thresholds.svg" alt="Mean and median thresholds and binary label rows." loading="lazy"><strong>Thresholds & bins</strong><span>Representations, outliers, and occupancy</span></a>
-<a class="lz-gallery-card" href="permutations/"><img src="../assets/figures/permutations.svg" alt="An ordinal-pattern signal, label strip, and pattern counts." loading="lazy"><strong>Ordinal patterns</strong><span>From local orderings to symbolic sequences</span></a>
-<a class="lz-gallery-card" href="structure/"><img src="../assets/figures/measures.svg" alt="Entropy and E scores for six symbolic sequences." loading="lazy"><strong>Structure & randomness</strong><span>h, E, profiles, and sample lengths</span></a>
-<a class="lz-gallery-card" href="distances/"><img src="../assets/figures/distance-matrix.svg" alt="An eight-sequence measured NID matrix." loading="lazy"><strong>Similarity maps</strong><span>All-pairs and corresponding distances</span></a>
-<a class="lz-gallery-card" href="workflows/"><img src="../assets/figures/axes.svg" alt="Array sequences and a channel-by-trial result heatmap." loading="lazy"><strong>Array workflows</strong><span>Custom rules, axes, and process agreement</span></a>
-<a class="lz-gallery-card" href="reproduce/"><img src="../assets/figures/factorization.svg" alt="The completed factors and copied tail of banana." loading="lazy"><strong>Open, reproducible figures</strong><span>Source, seeds, exports, and provenance</span></a>
-</div>
+| Topic | Contents |
+|---|---|
+| [Thresholds and bins](discretization.md) | Mean and median binarization, equal-width bins, quantile bins |
+| [Ordinal patterns](permutations.md) | Sliding windows, permutation ranks, ties, and label counts |
+| [Entropy and complexity](structure.md) | h and E, fitted profiles, estimator choice, and sequence length |
+| [Distance matrices](distances.md) | All-pairs NID and comparisons of corresponding sequences |
+| [Array calculations](workflows.md) | Axis selection, custom thresholds, parallel agreement, and factorization |
+| [Figure generation](reproduce.md) | Source, random seeds, numerical provenance, and exports |
 
-Each chapter includes small snippets you can try in IPython. For exact data,
-settings, and plotting code, use [the reproduction instructions](reproduce.md).
+## Discretization
+
+[![Mean and median thresholds and their binary labels for a sequence containing one outlier.](../assets/figures/thresholds.svg){ .plot }](../assets/figures/thresholds.svg "Open full-size figure")
+
+[![Mean and median thresholds and their binary labels for a sequence containing one outlier.](../assets/figures/dark/thresholds.svg){ .plot }](../assets/figures/dark/thresholds.svg "Open full-size figure")
+
+[Threshold and bin examples](discretization.md) compare how discretization rules
+assign symbols to the same observations.
+
+## Information distance
+
+[![An eight-by-eight normalized information-distance matrix for periodic sequences, noisy variants, and independent sequences.](../assets/figures/distance-matrix.svg){ .plot }](../assets/figures/distance-matrix.svg "Open full-size figure")
+
+[![An eight-by-eight normalized information-distance matrix for periodic sequences, noisy variants, and independent sequences.](../assets/figures/dark/distance-matrix.svg){ .plot }](../assets/figures/dark/distance-matrix.svg "Open full-size figure")
+
+[Distance examples](distances.md) describe the input sequences, matrix ordering,
+and finite-length self-distances.

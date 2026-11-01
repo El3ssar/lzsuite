@@ -1,11 +1,13 @@
-# Local orderings become symbols
+# Ordinal patterns
 
 Ordinal representations preserve how values are ordered inside a window, rather
 than the exact amplitudes or which side of a global threshold they occupy.
 
-![A noisy oscillatory sequence is converted into ordinal pattern ranks, with counts of all six possible order-three patterns.](../assets/figures/permutations.svg){ .plot }
+[![A noisy oscillatory sequence is converted into ordinal pattern ranks, with counts of all six possible order-three patterns.](../assets/figures/permutations.svg){ .plot }](../assets/figures/permutations.svg "Open full-size figure")
 
-## Follow three short windows
+[![A noisy oscillatory sequence is converted into ordinal pattern ranks, with counts of all six possible order-three patterns.](../assets/figures/dark/permutations.svg){ .plot }](../assets/figures/dark/permutations.svg "Open full-size figure")
+
+## Window ranks
 
 ```python
 import lzsuite as lzs
@@ -50,7 +52,7 @@ entropy = lzs.h(
 This is an LZ76 analysis **of the ordinal-pattern sequence**. It is not the
 Shannon entropy of the pattern histogram. Those are different measurements.
 
-## Pattern count grows quickly
+## Alphabet size
 
 Order 3 admits 6 patterns; order 5 admits 120; order 6 admits 720. The discretizer
 can produce integer ranks beyond 255. Analysis warns and merges categories if

@@ -1,7 +1,7 @@
-# From an array to an answer
+# Quickstart
 
-lzsuite handles the path from observations to symbols to Lempel–Ziv measurements.
-Start with one sequence, then use the same functions over your full array.
+Calculate measurements for one sequence, then apply the same functions along
+an axis of a multidimensional array.
 
 ## Install
 
@@ -52,7 +52,7 @@ result = lzs.lz76(signal, max_block_size=6)
 result["h"], result["emc"]["value"], result["emc"]["method"]
 ```
 
-No `.item()` is needed. One sequence returns Python values directly.
+One sequence returns Python values directly.
 
 ## A collection of sequences
 
@@ -75,7 +75,7 @@ matrix = lzs.distance(data)  # shape (12, 12): every pair
 paired = lzs.distance(data, other)  # shape (4, 3): corresponding pairs
 ```
 
-## Make the representation explicit
+## Select a discretization method
 
 ```python
 entropy = lzs.h(data, discretization="median")
@@ -89,12 +89,12 @@ symbols = rng.integers(0, 4, size=(2000, 4, 3))
 lzs.h(symbols)  # no automatic thresholding
 ```
 
-!!! tip "A small, inspectable example"
+!!! note "Integer input represents symbols"
     `lzs.h([0, 1, 0, 1, 0, 1, 0, 1])` returns `0.75`. These integers
     are eight observations. lzsuite encodes them as individual symbols instead
     of passing an integer list to the backend's decimal-text conversion.
 
-## Know the defaults
+## Defaults
 
 | Choice | Default | Override |
 |---|---|---|
@@ -106,5 +106,5 @@ lzs.h(symbols)  # no automatic thresholding
 | E maximum range | Automatic | `max_block_size=6`, for example |
 | Process budget | Up to four | `n_jobs=1`, `2`, or `-1` |
 
-Next, explore [arrays and axes](arrays.md), [discretization](discretization.md),
+See [arrays and axes](arrays.md), [discretization](discretization.md),
 or the [visual gallery](../gallery/index.md).

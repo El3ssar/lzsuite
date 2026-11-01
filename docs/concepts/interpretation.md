@@ -1,10 +1,10 @@
-# Interpret the measurement you actually made
+# Scientific interpretation
 
-lzsuite makes a sequence-analysis workflow convenient. It does not remove the
-need to choose a meaningful observation, control preprocessing, or assess
-finite-sample uncertainty.
+LZ76 measurements depend on the sequence representation, source assumptions,
+and sample length. This section describes those dependencies and the settings
+to report with a numerical result.
 
-## Representation defines the observation
+## Representation and sampling
 
 A binary threshold preserves high/low states. Quantile bins preserve relative
 levels under a fitted empirical distribution. Ordinal patterns preserve local
@@ -63,7 +63,7 @@ extras are backend diagnostic formulas. They are not replacements for sampling
 uncertainty from repeated trials, independent realizations, or a resampling
 scheme that respects temporal dependence.
 
-## A reproducible result includes its choices
+## Reporting requirements
 
 Record at least:
 

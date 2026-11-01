@@ -1,15 +1,23 @@
 # Analysis functions
 
-All functions below are called directly on `lzsuite`. A 1D input returns Python
-values; batch arrays retain every dimension outside the sequence axis. Reference
-content is generated from the NumPy-style source docstrings.
+Each entry documents its parameters, return types, validation, and examples.
 
-::: lzsuite.h
+## `h` {#lzsuite.h}
 
-::: lzsuite.complexity
+[Entropy density](h.md).
 
-::: lzsuite.factorization
+## `complexity` {#lzsuite.complexity}
 
-::: lzsuite.emc
+[Factor count](complexity.md).
 
-::: lzsuite.lz76
+## `factorization` {#lzsuite.factorization}
+
+[Factorization](factorization.md).
+
+## `emc` {#lzsuite.emc}
+
+[Effective measure complexity](emc.md).
+
+## `lz76` {#lzsuite.lz76}
+
+[Full LZ76 analysis](lz76.md).

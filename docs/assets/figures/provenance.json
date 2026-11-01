@@ -1,5 +1,9 @@
 {
   "seed": 1729,
+  "figure_variants": [
+    "light",
+    "dark"
+  ],
   "python": "3.12.15",
   "versions": {
     "lzsuite": "0.1.0",

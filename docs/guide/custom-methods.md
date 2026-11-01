@@ -1,8 +1,7 @@
-# Bring your own representation
+# Custom discretizers
 
 A custom discretizer is a Python callable receiving one numeric 1D array and
-returning one nonempty 1D array of integer labels. It may shorten the signal.
-It needs no class, inheritance, or output-length declaration.
+returning one nonempty 1D array of integer labels. The output length may differ from the input length.
 
 ## Pass a function directly
 
@@ -66,11 +65,12 @@ All sequences use the same physical thresholds. In contrast, the built-in
 `bins` and `quantile` methods fit their edges separately to every sequence.
 Record the edges with your results; they define what each category means.
 
-## Understand sensitivity
+## Threshold sensitivity
 
-![Changing a custom fixed threshold changes both symbol balance and measured entropy in a seeded synthetic signal.](../assets/figures/custom-threshold.svg){ .plot }
+[![Changing a custom fixed threshold changes both symbol balance and measured entropy in a seeded synthetic signal.](../assets/figures/custom-threshold.svg){ .plot }](../assets/figures/custom-threshold.svg "Open full-size figure")
+
+[![Changing a custom fixed threshold changes both symbol balance and measured entropy in a seeded synthetic signal.](../assets/figures/dark/custom-threshold.svg){ .plot }](../assets/figures/dark/custom-threshold.svg "Open full-size figure")
 <p class="caption">Both panels use the same oscillatory signal. The left panel describes its symbolic representation; the right shows actual LZ76 measurements. A representation change can move a score without changing the underlying observations.</p>
 
-Match representation rules across groups or explain explicitly why per-sequence
-fitting is part of the comparison. Avoid choosing a threshold just because it
-produces an attractive outcome.
+For comparisons across groups, use the same representation rule or document
+why thresholds are fitted separately to each sequence.

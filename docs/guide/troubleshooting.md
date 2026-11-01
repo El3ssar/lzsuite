@@ -63,7 +63,8 @@ requires a zero diagonal, and record the transformation.
 Startup, copying, preparation, and memory contention can outweigh native work.
 Compare `n_jobs=1`, `2`, and `4` on representative inputs and distinguish first-call
 startup from warmed repeated calls. Preparation is serial; each worker has one
-Rayon thread. There is no promise of speedup on every input.
+Rayon thread. Measure the runtime on representative inputs before increasing
+the process count.
 
 ## Reporting a reproducible problem
 

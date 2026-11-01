@@ -1,11 +1,11 @@
-# Complexity and entropy density
+# LZ76 measurements
 
 LZ76 follows repeated substrings, rather than only counting individual symbols.
 Its factor count C describes how often parsing introduces a completed new phrase.
 The normalized entropy density h turns that count into a finite-sequence
 entropy-rate estimate.
 
-## Follow a factorization
+## Factorization
 
 ```python
 import numpy as np
@@ -16,7 +16,9 @@ count, boundaries = lzs.factorization(sequence)
 count, boundaries  # (3, [0, 1, 2, 3, 7])
 ```
 
-![The letters banana are partitioned into three completed phrases and one dashed copied tail, with an attempted final boundary at position seven.](../assets/figures/factorization.svg){ .plot }
+[![The letters banana are partitioned into three completed phrases and one dashed copied tail, with an attempted final boundary at position seven.](../assets/figures/factorization.svg){ .plot }](../assets/figures/factorization.svg "Open full-size figure")
+
+[![The letters banana are partitioned into three completed phrases and one dashed copied tail, with an attempted final boundary at position seven.](../assets/figures/dark/factorization.svg){ .plot }](../assets/figures/dark/factorization.svg "Open full-size figure")
 
 The visible pieces are `b`, `a`, `n`, and `ana`. The final `ana` is copied from
 an earlier occurrence; attempting to extend it reaches beyond the end. The
@@ -49,18 +51,22 @@ The default base is the distinct-symbol count in each prepared sequence, floored
 at two. This is separate from the original float dtype or requested bin count:
 only categories actually present after discretization determine the default.
 
-## Interpret h alongside E
+## Entropy density and effective measure complexity
 
-![Six symbolic examples show low h for regular sequences and different E values for their organization across scales.](../assets/figures/measures.svg){ .plot }
+[![Six symbolic examples show low h for regular sequences and different E values for their organization across scales.](../assets/figures/measures.svg){ .plot }](../assets/figures/measures.svg "Open full-size figure")
+
+[![Six symbolic examples show low h for regular sequences and different E values for their organization across scales.](../assets/figures/dark/measures.svg){ .plot }](../assets/figures/dark/measures.svg "Open full-size figure")
 <p class="caption">8192 symbols per sequence, common binary units, E cap 6. “Persistent” is a synthetic binary process that flips with probability 0.08. “Independent” is a seeded fair binary sample. These are finite measurements, not universal reference values.</p>
 
 Raw complexity grows with length, so compare it at matched lengths. h estimates
 new information per symbol; E examines finite-range organization. Neither is
 an all-purpose measure of how scientifically interesting a source is.
 
-## Finite length matters
+## Finite-length behavior
 
-![Entropy estimates for periodic, persistent, and independent sequences change as their observed prefix length grows.](../assets/figures/convergence.svg){ .plot }
+[![Entropy estimates for periodic, persistent, and independent sequences change as their observed prefix length grows.](../assets/figures/convergence.svg){ .plot }](../assets/figures/convergence.svg "Open full-size figure")
+
+[![Entropy estimates for periodic, persistent, and independent sequences change as their observed prefix length grows.](../assets/figures/dark/convergence.svg){ .plot }](../assets/figures/dark/convergence.svg "Open full-size figure")
 <p class="caption">Each curve uses prefixes of one seeded sequence. The dotted line is the one-bit entropy rate of a fair iid binary source, not an exact finite-sample target. h can exceed one; lzsuite does not clip it.</p>
 
 Check multiple lengths and independent observations. Prefixes overlap, so they

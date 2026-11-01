@@ -1,8 +1,10 @@
-# From a scientific layout to repeatable results
+# Array calculations
 
-## Preserve your channel/trial dimensions
+## Channel and trial dimensions
 
-![Four example channels and their four-by-three entropy heatmap illustrate the sequence-axis contract.](../assets/figures/axes.svg){ .plot }
+[![Four example channels and their four-by-three entropy heatmap illustrate the sequence-axis contract.](../assets/figures/axes.svg){ .plot }](../assets/figures/axes.svg "Open full-size figure")
+
+[![Four example channels and their four-by-three entropy heatmap illustrate the sequence-axis contract.](../assets/figures/dark/axes.svg){ .plot }](../assets/figures/dark/axes.svg "Open full-size figure")
 
 The gallery data are shaped `(2048, 4, 3)`. Only the observation axis is removed
 by `h`, so each output position still identifies one channel and one trial.
@@ -17,9 +19,11 @@ lzs.h(x).shape  # (4, 3)
 
 [SVG](../assets/figures/axes.svg) · [PNG](../assets/figures/axes.png)
 
-## Ask a different question with a custom threshold
+## Fixed thresholds
 
-![A fixed threshold changes the fraction of ones and the measured LZ76 entropy in the same observations.](../assets/figures/custom-threshold.svg){ .plot }
+[![A fixed threshold changes the fraction of ones and the measured LZ76 entropy in the same observations.](../assets/figures/custom-threshold.svg){ .plot }](../assets/figures/custom-threshold.svg "Open full-size figure")
+
+[![A fixed threshold changes the fraction of ones and the measured LZ76 entropy in the same observations.](../assets/figures/dark/custom-threshold.svg){ .plot }](../assets/figures/dark/custom-threshold.svg "Open full-size figure")
 
 ```python
 def fixed_threshold(values, *, level=0.0):
@@ -39,9 +43,11 @@ mean fitted independently to each recording.
 
 [SVG](../assets/figures/custom-threshold.svg) · [PNG](../assets/figures/custom-threshold.png)
 
-## Distribute calculations without changing their meaning
+## Serial and parallel agreement
 
-![Inline and two-process results overlap for twelve sequences and their pointwise differences are exactly zero.](../assets/figures/parallel-agreement.svg){ .plot }
+[![Inline and two-process results overlap for twelve sequences and their pointwise differences are exactly zero.](../assets/figures/parallel-agreement.svg){ .plot }](../assets/figures/parallel-agreement.svg "Open full-size figure")
+
+[![Inline and two-process results overlap for twelve sequences and their pointwise differences are exactly zero.](../assets/figures/dark/parallel-agreement.svg){ .plot }](../assets/figures/dark/parallel-agreement.svg "Open full-size figure")
 
 ```python
 serial = lzs.h(x, n_jobs=1)
@@ -49,15 +55,16 @@ parallel = lzs.h(x, n_jobs=2)
 np.testing.assert_array_equal(serial, parallel)
 ```
 
-This demonstrates result agreement, not a performance improvement. Actual speed
-and memory use depend on input size, operation, method, hardware, and process
-startup. See the [parallel guide](../guide/parallel.md) for the execution budget.
+The two calls return identical entropy estimates. Runtime and memory use depend
+on input size, operation, method, hardware, and process startup. See the [parallel guide](../guide/parallel.md) for the execution budget.
 
 [SVG](../assets/figures/parallel-agreement.svg) · [PNG](../assets/figures/parallel-agreement.png)
 
-## Inspect a symbolic parse
+## Factorization
 
-![The string banana is shown with three completed phrases and a copied tail excluded from the count.](../assets/figures/factorization.svg){ .plot }
+[![The string banana is shown with three completed phrases and a copied tail excluded from the count.](../assets/figures/factorization.svg){ .plot }](../assets/figures/factorization.svg "Open full-size figure")
+
+[![The string banana is shown with three completed phrases and a copied tail excluded from the count.](../assets/figures/dark/factorization.svg){ .plot }](../assets/figures/dark/factorization.svg "Open full-size figure")
 
 ```python
 count, boundaries = lzs.factorization(np.array(list("banana")))

@@ -22,12 +22,12 @@ the source is available on GitHub, and releases are archived on Zenodo.
 
 Visit the **[documentation site](https://el3ssar.github.io/lzsuite/)** for the
 [quickstart](https://el3ssar.github.io/lzsuite/guide/quickstart/),
-[illustrated gallery](https://el3ssar.github.io/lzsuite/gallery/), and
+[numerical examples](https://el3ssar.github.io/lzsuite/gallery/), and
 [API reference](https://el3ssar.github.io/lzsuite/api/).
 The gallery includes 14 reproducible plots covering discretization, ordinal
 patterns, entropy density, effective complexity, distances, and array workflows.
 
-## Install and try it
+## Installation
 
 Install from PyPI with Python 3.10+:
 
@@ -130,7 +130,7 @@ Permutation ties are ordered by position, earlier first. Permutation output has
 `len(signal) - (order - 1) * delay` entries; it is a discretization, not a
 permutation-entropy calculation.
 
-### Your own methods
+### Custom methods
 
 A method receives a numeric 1D array and returns a nonempty 1D array of integer
 labels. Its output length can change. The input is copied before calling it, so

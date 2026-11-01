@@ -1,10 +1,12 @@
-# Arrays, axes, and result shapes
+# Arrays and axes
 
-An array dimension is not automatically “time.” You choose the sequence axis;
-each combination of positions on the other axes identifies one sequence.
+The sequence axis contains successive observations. Each combination of
+positions on the other axes identifies one sequence.
 
-![Four signals and a four-by-three heatmap show how observations along axis zero become one entropy estimate per channel and trial.](../assets/figures/axes.svg){ .plot }
-<p class="caption">Synthetic observations shaped (2048, 4, 3), analyzed with axis=0. Each channel/trial position contributes its own temporal sequence. The heatmap contains actual lzsuite results.</p>
+[![Four signals and a four-by-three heatmap show how observations along axis zero become one entropy estimate per channel and trial.](../assets/figures/axes.svg){ .plot }](../assets/figures/axes.svg "Open full-size figure")
+
+[![Four signals and a four-by-three heatmap show how observations along axis zero become one entropy estimate per channel and trial.](../assets/figures/dark/axes.svg){ .plot }](../assets/figures/dark/axes.svg "Open full-size figure")
+<p class="caption">Synthetic observations shaped (2048, 4, 3), analyzed with axis=0. Each channel/trial position contributes its own temporal sequence. The heatmap shows entropy density for each sequence.</p>
 
 ## The shape rule
 
@@ -26,7 +28,7 @@ h[2, 1]  # channel 2, trial 1
 The sequence at that position is `x[:, 2, 1]`. Binarization fits its mean from
 those observations alone, unless another method is supplied.
 
-## Changing the axis changes the question
+## Selecting a different axis
 
 | Input | Axis | Sequence count | Observations per sequence | Scalar result |
 |---|---:|---:|---:|---|
@@ -34,9 +36,8 @@ those observations alone, unless another method is supplied.
 | `(1000, 4, 3)` | 1 | 3000 | 4 | `(1000, 3)` |
 | `(1000, 4, 3)` | 2 | 4000 | 3 | `(1000, 4)` |
 
-An axis of length three may be meaningful for following the parser, but rarely
-provides a stable entropy-rate estimate. Think about the observation represented
-by the axis, not just the output shape you want.
+Changing the selected axis changes the sequence length and the observations
+being compared. Very short sequences give unstable entropy-rate estimates.
 
 ```python
 last_axis = np.moveaxis(x, 0, -1)
@@ -81,5 +82,5 @@ A zero-length sequence axis is rejected. An empty collection with a nonempty
 sequence axis is allowed: input `(1000, 0, 3)` gives an empty scalar result of
 shape `(0, 3)`. Scalar inputs such as `3.5` or `np.array(3.5)` are not sequences.
 
-See [distance shapes](distances.md) for the deliberate exception: all-pairs
+See [distance shapes](distances.md) for all-pairs comparisons, which
 comparison flattens batch positions into rows and columns.

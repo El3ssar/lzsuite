@@ -1,4 +1,4 @@
-# Compare the patterns sequences share
+# Information distance
 
 LZ76 information distance compares factor counts for X, Y, XY, and YX:
 
@@ -21,7 +21,9 @@ matrix = lzs.distance(data)
 matrix.shape  # (12, 12)
 ```
 
-![A measured eight-sequence NID matrix groups exact copies, periodic variants, and independent samples without forcing a zero diagonal.](../assets/figures/distance-matrix.svg){ .plot }
+[![A measured eight-sequence NID matrix groups exact copies, periodic variants, and independent samples without forcing a zero diagonal.](../assets/figures/distance-matrix.svg){ .plot }](../assets/figures/distance-matrix.svg "Open full-size figure")
+
+[![A measured eight-sequence NID matrix groups exact copies, periodic variants, and independent samples without forcing a zero diagonal.](../assets/figures/dark/distance-matrix.svg){ .plot }](../assets/figures/dark/distance-matrix.svg "Open full-size figure")
 
 Matrix order is C-order flattening of the batch shape. For `(4, 3)`, position
 `(channel, trial)` maps to row `channel * 3 + trial`. Each unordered pair is
@@ -41,7 +43,9 @@ paired = lzs.distance(data, other)
 paired.shape  # (4, 3)
 ```
 
-![A four-by-three heatmap compares corresponding signal pairs with different amounts of added noise.](../assets/figures/paired-distances.svg){ .plot }
+[![A four-by-three heatmap compares corresponding signal pairs with different amounts of added noise.](../assets/figures/paired-distances.svg){ .plot }](../assets/figures/paired-distances.svg "Open full-size figure")
+
+[![A four-by-three heatmap compares corresponding signal pairs with different amounts of added noise.](../assets/figures/dark/paired-distances.svg){ .plot }](../assets/figures/dark/paired-distances.svg "Open full-size figure")
 <p class="caption">Each position compares one original sequence with its counterpart. Float inputs are independently mean-binarized before measuring NID. The no-added-noise column still retains actual finite-sequence self-distances.</p>
 
 Shapes outside the sequence axis must match exactly; there is no broadcasting.
@@ -54,7 +58,7 @@ lzs.nid(data[:, 0, 0], other[:, 0, 0])  # same function, alias
 lzs.distance(data[:, 0, 0]).shape  # (1, 1): all-pairs mode
 ```
 
-## Category meanings must match
+## Shared symbol encoding
 
 The library builds a shared codebook across the inputs. It does not independently
 map each sequence's first category to zero: that could make disjoint vocabularies

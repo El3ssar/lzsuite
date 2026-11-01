@@ -1,18 +1,17 @@
-# API at a glance
+# API reference
 
-A small top-level namespace contains only the functions users call. All
-implementation modules are private. Use `help(lzs.h)` or `lzs.h?` in IPython for
-the same NumPy-style parameter documentation rendered in this site.
+Import public functions from `lzsuite`. In Python, `help(lzs.h)` displays the
+same source docstring used to generate the function reference.
 
 ## Measurements
 
 | Function | One 1D sequence | Batch input |
 |---|---|---|
-| [`h`](reference/analysis.md#lzsuite.h) | `float` | Float ndarray |
-| [`complexity`](reference/analysis.md#lzsuite.complexity) | `int` | Integer ndarray |
-| [`factorization`](reference/analysis.md#lzsuite.factorization) | `(count, boundaries)` | Object ndarray of tuples |
-| [`emc`](reference/analysis.md#lzsuite.emc) | `(score, increments)` | Score ndarray plus object ndarray of lists |
-| [`lz76`](reference/analysis.md#lzsuite.lz76) | Dictionary | Object ndarray of dictionaries |
+| [`h`](reference/h.md#lzsuite.h) | `float` | Float ndarray |
+| [`complexity`](reference/complexity.md#lzsuite.complexity) | `int` | Integer ndarray |
+| [`factorization`](reference/factorization.md#lzsuite.factorization) | `(count, boundaries)` | Object ndarray of tuples |
+| [`emc`](reference/emc.md#lzsuite.emc) | `(score, increments)` | Score ndarray plus object ndarray of lists |
+| [`lz76`](reference/lz76.md#lzsuite.lz76) | Dictionary | Object ndarray of dictionaries |
 
 Common keyword arguments are `axis=0`, `discretization=None`,
 `discretization_kwargs=None`, and `n_jobs=4`. h, E, and full analysis accept
@@ -28,7 +27,7 @@ Common keyword arguments are `axis=0`, `discretization=None`,
 | `distance(sequence, other_sequence)` | Python float |
 | `nid(...)` | Alias for `distance` |
 
-## Representation
+## Discretization
 
 | Function | Purpose |
 |---|---|

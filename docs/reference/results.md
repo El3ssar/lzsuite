@@ -1,7 +1,7 @@
 # Result conventions and validation
 
-These conventions describe what is returned, including finite-sequence cases
-that can be surprising if you assume another parser's definitions.
+Return types, field definitions, validation rules, and finite-sequence parsing
+conventions.
 
 ## Scalar and array results
 
